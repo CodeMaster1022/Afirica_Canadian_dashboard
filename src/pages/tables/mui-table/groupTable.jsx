@@ -123,7 +123,6 @@ export default function GroupTable() {
 
   const handleAction = (id, action) => {
     handleClose();
-    console.log('reactiveate');
     Swal.fire({
       title: `Do you want to ${action} this user?`,
       showDenyButton: true,

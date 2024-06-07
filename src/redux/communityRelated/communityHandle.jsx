@@ -16,7 +16,6 @@ const config = {
 export const getCommunity = () => async (dispatch) => {
   try {
     const result = await axios.get('https://api.accalberta.ca/api/v1/admin/communities/', config);
-    console.log(result, 'result');
     if (result.data.data.message) {
       dispatch(getFailedTwo(result.data.data.message));
     } else {
@@ -104,7 +103,6 @@ export const deleteCommunity = (id) => async () => {
   // dispatch(getRequest());
   try {
     const result = await axiosInstance.delete(`/admin/communities/${id}/`);
-    console.log(result.data.message);
     if (result) {
       Toast.fire({
         icon: 'success',
@@ -114,7 +112,6 @@ export const deleteCommunity = (id) => async () => {
       });
     }
   } catch (error) {
-    console.log(error);
     Toast.fire({
       icon: 'error',
       position: 'center',

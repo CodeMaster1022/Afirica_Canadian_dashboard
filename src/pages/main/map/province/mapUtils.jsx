@@ -12,14 +12,18 @@ export function getCenterOfGeoJson(geoJson) {
 export function layersUtils(geoJsonRef, mapRef) {
   function highlightOnClick(e) {
     var layer = e.target;
-
+    console.log(layer);
     layer.setStyle({
       weight: 2,
       color: 'black',
       dashArray: '3',
       fillOpacity: 0.7
     });
-
+    const content = `<div><h3>User information</h3><p>Country:${e.target.feature.properties.COUNTRY}: 
+    </p><p>Province Name:${e.target.feature.properties.NAME_1}<p/>
+    </p><p>Users:${e.target.feature.properties.USER_COUNT}<p/>
+    <p>Type:${e.target.feature.properties.TYPE_2}</p>`; // You can add any HTML markup here
+    layer.bindPopup(content).openPopup();
     if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
       layer.bringToFront();
     }

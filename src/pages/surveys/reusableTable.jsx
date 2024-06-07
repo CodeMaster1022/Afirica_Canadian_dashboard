@@ -17,7 +17,7 @@ import { visuallyHidden } from '@mui/utils';
 // project imports
 import MainCard from 'components/MainCard';
 import { RowSelection } from 'components/third-party/react-table';
-import ViewSurveyModal from './viewSurveyModal';
+import ViewSurveyModal from '../main/Modal/viewSurveyModal';
 // import { headerData } from './basic';
 function createData(id, user, photo, email, phone, community, join, action) {
   return {

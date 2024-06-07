@@ -269,111 +269,97 @@ const AddNewUserProfile = ({ modalOpen, modalClose }) => {
             </Grid>
             <>
               <form onSubmit={handleSubmitEvent} style={{ width: '100%' }}>
-                <Grid container>
+                <Grid container spacing={2}>
                   <Grid item xs={6}>
-                    <Grid>
-                      <Box sx={{ marginTop: '15px', padding: '5px' }}>
-                        <Typography sx={{ color: '#8C8C8C' }}>Full Name</Typography>
-                        <TextField type="text" name="first_name" onChange={handleInput} sx={{ width: '100%' }} />
-                      </Box>
-                      <Box sx={{ padding: '5px' }}>
-                        <Typography sx={{ color: '#8C8C8C' }}>Email Address</Typography>
-                        <TextField type="email" name="email" onChange={handleInput} sx={{ width: '100%' }} />
-                      </Box>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Grid>
-                      <Box sx={{ marginTop: '15px', padding: '5px' }}>
-                        <Typography sx={{ color: '#8C8C8C' }}>LastName</Typography>
-                        <TextField type="text" name="last_name" onChange={handleInput} sx={{ width: '100%' }} />
-                      </Box>
-                      <Box sx={{ padding: '5px' }}>
-                        <Typography sx={{ color: '#8C8C8C' }}>Phone Number</Typography>
-                        <TextField type="text" name="phone_number" onChange={handleInput} sx={{ width: '100%' }} />
-                      </Box>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={12}>
+                    <Box sx={{ marginTop: '15px', padding: '5px' }}>
+                      <Typography sx={{ color: '#8C8C8C' }}>Full Name</Typography>
+                      <TextField type="text" name="first_name" onChange={handleInput} sx={{ width: '100%' }} />
+                    </Box>
                     <Box sx={{ padding: '5px' }}>
-                      <Typography sx={{ color: '#8C8C8C' }}>Community</Typography>
-                      <FormControl sx={{ width: '100%' }}>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={com}
-                          onChange={handleChangeCommunity}
-                          placeholder="community"
-                        >
-                          {communityList
-                            ? communityList.map((com, index) => (
-                                <MenuItem key={index} value={index + 1}>
-                                  {com.name}
-                                </MenuItem>
-                              ))
-                            : null}
-                        </Select>
-                      </FormControl>
+                      <Typography sx={{ color: '#8C8C8C' }}>Email Address</Typography>
+                      <TextField type="email" name="email" onChange={handleInput} sx={{ width: '100%' }} />
                     </Box>
                   </Grid>
                   <Grid item xs={6}>
-                    <Grid item xs={12}>
-                      <Box sx={{ padding: '5px' }}>
-                        <Typography sx={{ color: '#8C8C8C' }}>Password</Typography>
-                        <OutlinedInput
-                          id="outlined-adornment-password"
-                          type={values.showPassword ? 'text' : 'password'}
-                          value={values.password}
-                          name="password"
-                          onChange={handleChange('password')}
-                          sx={{ width: '100%' }}
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                edge="end"
-                                color="secondary"
-                              >
-                                {values.showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
-                              </IconButton>
-                            </InputAdornment>
-                          }
-                        />
-                      </Box>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Grid item xs={12}>
-                      <Box sx={{ padding: '5px' }}>
-                        <Typography sx={{ color: '#8C8C8C' }}>Confirm Password</Typography>
-                        <OutlinedInput
-                          id="outlined-adornment-confirm"
-                          type={confirmValues.showPassword ? 'text' : 'password'}
-                          value={confirmValues.password}
-                          name="confirmPassword"
-                          onChange={handleConfirmChange('password')}
-                          sx={{ width: '100%' }}
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleConfirmClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                edge="end"
-                                color="secondary"
-                              >
-                                {confirmValues.showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
-                              </IconButton>
-                            </InputAdornment>
-                          }
-                        />
-                      </Box>
-                    </Grid>
+                    <Box sx={{ marginTop: '15px', padding: '5px' }}>
+                      <Typography sx={{ color: '#8C8C8C' }}>LastName</Typography>
+                      <TextField type="text" name="last_name" onChange={handleInput} sx={{ width: '100%' }} />
+                    </Box>
+                    <Box sx={{ padding: '5px' }}>
+                      <Typography sx={{ color: '#8C8C8C' }}>Phone Number</Typography>
+                      <TextField type="text" name="phone_number" onChange={handleInput} sx={{ width: '100%' }} />
+                    </Box>
                   </Grid>
                   <Grid item xs={12}>
-                    <Stack direction="row" justifyContent="flex-end" spacing={2} paddingTop={1}>
+                    <Typography sx={{ color: '#8C8C8C' }}>Community</Typography>
+                    <FormControl sx={{ width: '100%' }}>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={com}
+                        onChange={handleChangeCommunity}
+                        placeholder="community"
+                      >
+                        {communityList
+                          ? communityList.map((com, index) => (
+                              <MenuItem key={index} value={index + 1}>
+                                {com.name}
+                              </MenuItem>
+                            ))
+                          : null}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography sx={{ color: '#8C8C8C' }}>Password</Typography>
+                    <OutlinedInput
+                      id="outlined-adornment-password"
+                      type={values.showPassword ? 'text' : 'password'}
+                      value={values.password}
+                      name="password"
+                      onChange={handleChange('password')}
+                      sx={{ width: '100%' }}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                            color="secondary"
+                          >
+                            {values.showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography sx={{ color: '#8C8C8C' }}>Confirm Password</Typography>
+                    <OutlinedInput
+                      id="outlined-adornment-confirm"
+                      type={confirmValues.showPassword ? 'text' : 'password'}
+                      value={confirmValues.password}
+                      name="confirmPassword"
+                      onChange={handleConfirmChange('password')}
+                      sx={{ width: '100%' }}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleConfirmClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                            color="secondary"
+                          >
+                            {confirmValues.showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                  </Grid>
+                  <Grid container>
+                    <Stack direction="row" justifyContent="flex-end" spacing={2} paddingTop={1} sx={{ width: '100%' }}>
                       <Button variant="contained" color="error" onClick={handleCancel} type="button">
                         Cancel
                       </Button>

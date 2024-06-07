@@ -46,7 +46,7 @@ const AddNewUpdate = ({ modalOpen, modalClose }) => {
   const [video, setVideo] = useState('Hello');
   const [user, setUser] = useState('Hello');
   const [documnet, setDocument] = useState('Hello');
-  const ProfileClose = () => {
+  const ProfileSave = () => {
     if (image !== '' && title !== '' && description !== '' && group !== '') {
       dispatch(createStatus({ image, title, description, group, video, user, documnet }));
       // modalClose();
@@ -136,63 +136,53 @@ const AddNewUpdate = ({ modalOpen, modalClose }) => {
                 </Stack>
               </Box>
             </Grid>
-            <>
-              <Grid item xs={12}>
-                <Grid>
-                  <Box sx={{ marginTop: '15px', padding: '5px' }}>
-                    <Typography sx={{ color: '#8C8C8C' }}>Title</Typography>
-                    <TextField sx={{ width: '100%' }} value={title} required onChange={(e) => setTitle(e.target.value)} />
-                  </Box>
-                </Grid>
-              </Grid>
-              <Grid item xs={12}>
-                <Box sx={{ padding: '5px' }}>
-                  <Typography sx={{ color: '#8C8C8C' }}>Community</Typography>
-                  <FormControl sx={{ width: '100%' }}>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={group}
-                      onChange={handleChangeCommunity}
-                      placeholder="community"
-                    >
-                      {communityList.map((com, index) => (
-                        <MenuItem value={com.id} key={index}>
-                          {com.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Box>
-              </Grid>
-              <Grid container>
-                <Box sx={{ padding: '10px' }}>
-                  <Typography sx={{ color: '#8C8C8C' }}>Body</Typography>
-                  <Divider />
-                  <Box>
-                    <MUIRichTextEditor
-                      label="Start typing..."
-                      required
-                      onChange={(value) => {
-                        const content = JSON.stringify(convertToRaw(value.getCurrentContent()));
-                        setDescription(content);
-                      }}
-                    />
-                  </Box>
-                  <Divider />
-                </Box>
-              </Grid>
-              <Grid sx={{ marginTop: '35px' }}>
-                <Stack direction="row" justifyContent="flex-end" spacing={2} paddingTop={1}>
-                  <Button variant="contained" color="error" onClick={ProfileClose}>
-                    Cancel
-                  </Button>
-                  <Button variant="contained" onClick={ProfileClose}>
-                    Save
-                  </Button>
-                </Stack>
-              </Grid>
-            </>
+            <Grid item xs={12}>
+              <Typography sx={{ color: '#8C8C8C' }}>Title</Typography>
+              <TextField sx={{ width: '100%' }} value={title} required onChange={(e) => setTitle(e.target.value)} />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography sx={{ color: '#8C8C8C' }}>Community</Typography>
+              <FormControl sx={{ width: '100%' }}>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={group}
+                  onChange={handleChangeCommunity}
+                  placeholder="community"
+                >
+                  {communityList.map((com, index) => (
+                    <MenuItem value={com.id} key={index}>
+                      {com.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography sx={{ color: '#8C8C8C' }}>Body</Typography>
+              <Divider />
+              <Box>
+                <MUIRichTextEditor
+                  label="Start typing..."
+                  required
+                  onChange={(value) => {
+                    const content = JSON.stringify(convertToRaw(value.getCurrentContent()));
+                    setDescription(content);
+                  }}
+                />
+              </Box>
+              <Divider />
+            </Grid>
+            <Grid sx={{ marginTop: '35px' }} container>
+              <Stack direction="row" justifyContent="flex-end" spacing={2} paddingTop={1} sx={{ width: '100%' }}>
+                <Button variant="contained" color="error" onClick={modalClose}>
+                  Cancel
+                </Button>
+                <Button variant="contained" onClick={ProfileSave}>
+                  Save
+                </Button>
+              </Stack>
+            </Grid>
           </Grid>
         </Box>
       </Modal>

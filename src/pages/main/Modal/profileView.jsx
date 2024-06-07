@@ -269,121 +269,101 @@ const ProfileModal = ({ modalOpen, modalClose, user }) => {
             {edit ? (
               <>
                 <form onSubmit={handleSubmitEvent} style={{ width: '100%' }}>
-                  <Grid container>
+                  <Grid container spacing={2}>
                     <Grid item xs={6}>
-                      <Grid>
-                        <Box sx={{ marginTop: '15px', padding: '5px' }}>
-                          <Typography sx={{ color: '#8C8C8C' }}>Full Name</Typography>
-                          <TextField type="text" value={user.firstName} name="firstName" onChange={handleInput} sx={{ width: '100%' }} />
-                        </Box>
-                        <Box sx={{ padding: '5px' }}>
-                          <Typography sx={{ color: '#8C8C8C' }}>Email Address</Typography>
-                          <TextField type="email" value={user.email} name="email" onChange={handleInput} sx={{ width: '100%' }} />
-                        </Box>
-                      </Grid>
+                      <Typography sx={{ color: '#8C8C8C' }}>Full Name</Typography>
+                      <TextField type="text" value={user.firstName} name="firstName" onChange={handleInput} sx={{ width: '100%' }} />
                     </Grid>
                     <Grid item xs={6}>
-                      <Grid>
-                        <Box sx={{ marginTop: '15px', padding: '5px' }}>
-                          <Typography sx={{ color: '#8C8C8C' }}>LastName</Typography>
-                          <TextField type="text" value={user.lastName} name="lastName" onChange={handleInput} sx={{ width: '100%' }} />
-                        </Box>
-                        <Box sx={{ padding: '5px' }}>
-                          <Typography sx={{ color: '#8C8C8C' }}>Phone Number</Typography>
-                          <TextField
-                            type="text"
-                            value={user.phoneNumber ? user.phoneNumber : 'No Phone'}
-                            name="phone"
-                            onChange={handleInput}
-                            sx={{ width: '100%' }}
-                          />
-                        </Box>
-                      </Grid>
+                      <Typography sx={{ color: '#8C8C8C' }}>Email Address</Typography>
+                      <TextField type="email" value={user.email} name="email" onChange={handleInput} sx={{ width: '100%' }} />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Typography sx={{ color: '#8C8C8C' }}>LastName</Typography>
+                      <TextField type="text" value={user.lastName} name="lastName" onChange={handleInput} sx={{ width: '100%' }} />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Typography sx={{ color: '#8C8C8C' }}>Phone Number</Typography>
+                      <TextField
+                        type="text"
+                        value={user.phoneNumber ? user.phoneNumber : 'No Phone'}
+                        name="phone"
+                        onChange={handleInput}
+                        sx={{ width: '100%' }}
+                      />
                     </Grid>
                     <Grid item xs={12}>
-                      <Box sx={{ padding: '5px' }}>
-                        <Typography sx={{ color: '#8C8C8C' }}>Community</Typography>
-                        <FormControl sx={{ width: '100%' }}>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={com}
-                            onChange={handleChangeCommunity}
-                            placeholder="community"
-                          >
-                            {communityList
-                              ? communityList.map((com, index) => (
-                                  <MenuItem key={index} value={index + 1}>
-                                    {com.name}
-                                  </MenuItem>
-                                ))
-                              : undefined}
-                          </Select>
-                        </FormControl>
-                      </Box>
+                      <Typography sx={{ color: '#8C8C8C' }}>Community</Typography>
+                      <FormControl sx={{ width: '100%' }}>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={com}
+                          onChange={handleChangeCommunity}
+                          placeholder="community"
+                        >
+                          {communityList
+                            ? communityList.map((com, index) => (
+                                <MenuItem key={index} value={index + 1}>
+                                  {com.name}
+                                </MenuItem>
+                              ))
+                            : undefined}
+                        </Select>
+                      </FormControl>
                     </Grid>
                     <Grid item xs={6}>
-                      <Grid item xs={12}>
-                        <Box sx={{ padding: '5px' }}>
-                          <Typography sx={{ color: '#8C8C8C' }}>Password</Typography>
-                          <OutlinedInput
-                            id="outlined-adornment-password"
-                            type={values.showPassword ? 'text' : 'password'}
-                            value={values.password}
-                            onChange={handleChange('password')}
-                            sx={{ width: '100%' }}
-                            endAdornment={
-                              <InputAdornment position="end">
-                                <IconButton
-                                  aria-label="toggle password visibility"
-                                  onClick={handleClickShowPassword}
-                                  onMouseDown={handleMouseDownPassword}
-                                  edge="end"
-                                  color="secondary"
-                                >
-                                  {values.showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
-                                </IconButton>
-                              </InputAdornment>
-                            }
-                          />
-                        </Box>
-                      </Grid>
+                      <Typography sx={{ color: '#8C8C8C' }}>Password</Typography>
+                      <OutlinedInput
+                        id="outlined-adornment-password"
+                        type={values.showPassword ? 'text' : 'password'}
+                        value={values.password}
+                        onChange={handleChange('password')}
+                        sx={{ width: '100%' }}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={handleClickShowPassword}
+                              onMouseDown={handleMouseDownPassword}
+                              edge="end"
+                              color="secondary"
+                            >
+                              {values.showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                      />
                     </Grid>
                     <Grid item xs={6}>
-                      <Grid item xs={12}>
-                        <Box sx={{ padding: '5px' }}>
-                          <Typography sx={{ color: '#8C8C8C' }}>Confirm Password</Typography>
-                          <OutlinedInput
-                            id="outlined-adornment-confirm"
-                            type={confirmValues.showPassword ? 'text' : 'password'}
-                            value={confirmValues.password}
-                            onChange={handleConfirmChange('password')}
-                            sx={{ width: '100%' }}
-                            endAdornment={
-                              <InputAdornment position="end">
-                                <IconButton
-                                  aria-label="toggle password visibility"
-                                  onClick={handleConfirmClickShowPassword}
-                                  onMouseDown={handleMouseDownPassword}
-                                  edge="end"
-                                  color="secondary"
-                                >
-                                  {confirmValues.showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
-                                </IconButton>
-                              </InputAdornment>
-                            }
-                          />
-                        </Box>
-                      </Grid>
+                      <Typography sx={{ color: '#8C8C8C' }}>Confirm Password</Typography>
+                      <OutlinedInput
+                        id="outlined-adornment-confirm"
+                        type={confirmValues.showPassword ? 'text' : 'password'}
+                        value={confirmValues.password}
+                        onChange={handleConfirmChange('password')}
+                        sx={{ width: '100%' }}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={handleConfirmClickShowPassword}
+                              onMouseDown={handleMouseDownPassword}
+                              edge="end"
+                              color="secondary"
+                            >
+                              {confirmValues.showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                      />
                     </Grid>
                     <Grid item xs={12}>
-                      <Box sx={{ padding: '5px' }}>
-                        <Typography sx={{ color: '#8C8C8C' }}>Account Status</Typography>
-                        <TextField sx={{ width: '100%' }} />
-                      </Box>
+                      <Typography sx={{ color: '#8C8C8C' }}>Account Status</Typography>
+                      <TextField sx={{ width: '100%' }} />
                     </Grid>
-                    <Grid item xs={12}>
-                      <Stack direction="row" justifyContent="flex-end" spacing={2} paddingTop={1}>
+                    <Grid container>
+                      <Stack direction="row" justifyContent="flex-end" spacing={2} paddingTop={1} sx={{ width: '100%' }}>
                         <Button variant="contained" color="error" onClick={ProfileCancel} type="button">
                           Cancel
                         </Button>
@@ -396,40 +376,32 @@ const ProfileModal = ({ modalOpen, modalClose, user }) => {
                 </form>
               </>
             ) : (
-              <>
+              <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
-                  <Grid item xs={6}>
-                    <Box sx={{ padding: '5px' }}>
-                      <Typography sx={{ color: '#8C8C8C' }}>Full Name</Typography>
-                      <Typography fontSize={16}>{user.firstName}</Typography>
-                    </Box>
-                    <Box sx={{ padding: '5px' }}>
-                      <Typography sx={{ color: '#8C8C8C' }}>Email Address</Typography>
-                      <Typography fontSize={16}>{user.email}</Typography>
-                    </Box>
-                    <Box sx={{ padding: '5px' }}>
-                      <Typography sx={{ color: '#8C8C8C' }}>Community</Typography>
-                      <Typography fontSize={16}>{user.community ? user.community.name : 'no community'}</Typography>
-                    </Box>
-                    <Box sx={{ padding: '5px' }}>
-                      <Typography sx={{ color: '#8C8C8C' }}>Account Status</Typography>
-                      <Typography fontSize={16}>{user.status}</Typography>
-                    </Box>
-                  </Grid>
+                  <Typography sx={{ color: '#8C8C8C' }}>Full Name</Typography>
+                  <Typography fontSize={16}>{user.firstName}</Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <Grid item xs={12}>
-                    <Box sx={{ padding: '5px' }}>
-                      <Typography sx={{ color: '#8C8C8C' }}>Last Name</Typography>
-                      <Typography fontSize={16}>{user.lastName}</Typography>
-                    </Box>
-                    <Box sx={{ padding: '5px', width: '100%' }}>
-                      <Typography sx={{ color: '#8C8C8C' }}>Phone Number</Typography>
-                      <Typography fontSize={16}>{user.phoneNumber ? user.phoneNumber : 'no phone'}</Typography>
-                    </Box>
-                  </Grid>
+                  <Typography sx={{ color: '#8C8C8C' }}>Email Address</Typography>
+                  <Typography fontSize={16}>{user.email}</Typography>
                 </Grid>
-              </>
+                <Grid item xs={12} sm={6}>
+                  <Typography sx={{ color: '#8C8C8C' }}>Community</Typography>
+                  <Typography fontSize={16}>{user.community ? user.community.name : 'no community'}</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography sx={{ color: '#8C8C8C' }}>Account Status</Typography>
+                  <Typography fontSize={16}>{user.status}</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography sx={{ color: '#8C8C8C' }}>Last Name</Typography>
+                  <Typography fontSize={16}>{user.lastName}</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography sx={{ color: '#8C8C8C' }}>Phone Number</Typography>
+                  <Typography fontSize={16}>{user.phoneNumber ? user.phoneNumber : 'no phone'}</Typography>
+                </Grid>
+              </Grid>
             )}
           </Grid>
         </Box>

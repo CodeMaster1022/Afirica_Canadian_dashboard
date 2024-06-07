@@ -18,6 +18,9 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getCommunity } from 'redux/communityRelated/communityHandle';
@@ -47,7 +50,7 @@ const AddNewJob = ({ modalOpen, modalClose, currentEvent, action }) => {
   const [application, setApplication] = useState('');
   const [level, setLevel] = useState(1);
   const [start_date, setStartDate] = useState('2024-06-30 01:00:00');
-  const [end_date, setEndDate] = useState('2024-08-30 01:00:00');
+  const [end_date, setEndDate] = useState();
   const [community, setCommunity] = useState('');
   const [external_url, setExternalUrl] = useState('http://localhost:3000/events');
   const [tags, setTags] = useState('Hello');
@@ -97,6 +100,10 @@ const AddNewJob = ({ modalOpen, modalClose, currentEvent, action }) => {
     event.preventDefault();
     setCommunity(event.target.value);
   };
+  const handleChangeJobType = (event) => {
+    event.preventDefault();
+    setType(event.target.value);
+  };
   const handleChangeLevel = (event) => {
     event.preventDefault();
     setLevel(event.target.value);
@@ -124,7 +131,7 @@ const AddNewJob = ({ modalOpen, modalClose, currentEvent, action }) => {
     <>
       <Modal open={modalOpen} onClose={modalClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={modalstyle}>
-          <Typography>Add New Event</Typography>
+          <Typography>Add New Job</Typography>
           <Divider />
           <Box sx={{ height: '10px' }} />
           <Divider />
@@ -176,97 +183,109 @@ const AddNewJob = ({ modalOpen, modalClose, currentEvent, action }) => {
                 </Stack>
               </Box>
             </Grid>
-            <>
-              <Grid item xs={12}>
-                <Box sx={{ padding: '5px' }}>
-                  <Typography sx={{ color: '#8C8C8C' }}>Company Name</Typography>
-                  <TextField sx={{ width: '100%' }} value={name} required onChange={(e) => setName(e.target.value)} />
-                </Box>
-                <Box sx={{ padding: '5px' }}>
-                  <Typography sx={{ color: '#8C8C8C' }}>Title</Typography>
-                  <TextField sx={{ width: '100%' }} value={title} required onChange={(e) => setTitle(e.target.value)} />
-                </Box>
-                <Box sx={{ padding: '5px' }}>
-                  <Typography sx={{ color: '#8C8C8C' }}>Job Type</Typography>
-                  <TextField sx={{ width: '100%' }} value={type} required onChange={(e) => setJobType(e.target.value)} />
-                </Box>
-                <Box sx={{ padding: '5px' }}>
-                  <Typography sx={{ color: '#8C8C8C' }}>Experience Level</Typography>
-                  <FormControl sx={{ width: '100%' }}>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={level}
-                      onChange={handleChangeLevel}
-                      placeholder="community"
-                    >
-                      <MenuItem value={0}>Beginner</MenuItem>
-                      <MenuItem value={1}>Intermediate </MenuItem>
-                      <MenuItem value={2}>Professional </MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
-                <Box sx={{ padding: '5px' }}>
-                  <Typography sx={{ color: '#8C8C8C' }}>Location</Typography>
-                  <TextField sx={{ width: '100%' }} value={location} required onChange={(e) => setLocation(e.target.value)} />
-                </Box>
-                <Box sx={{ padding: '5px' }}>
-                  <Typography sx={{ color: '#8C8C8C' }}>End Date</Typography>
-                  <TextField sx={{ width: '100%' }} value={end_date} required onChange={(e) => setEndDate(e.target.value)} />
-                </Box>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography sx={{ color: '#8C8C8C' }}>Target Community</Typography>
-                <FormControl sx={{ width: '100%' }}>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={community}
-                    onChange={handleChangeCommunity}
-                    placeholder="level"
-                  >
-                    {communityList.map((com, index) => (
-                      <MenuItem value={com.id} key={index}>
-                        {com.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <Box sx={{ padding: '5px' }}>
-                  <Typography sx={{ color: '#8C8C8C' }}>Application Link</Typography>
-                  <TextField sx={{ width: '100%' }} value={application} required onChange={(e) => setApplication(e.target.value)} />
-                </Box>
-              </Grid>
-              <Grid container>
-                <Box sx={{ padding: '10px' }}>
-                  <Typography sx={{ color: '#8C8C8C' }}>Job Description</Typography>
-                  <Divider />
-                  <Box>
-                    <MUIRichTextEditor
-                      label="Start typing..."
-                      required
-                      onChange={(value) => {
-                        const content = JSON.stringify(convertToRaw(value.getCurrentContent()));
-                        setDescription(content);
-                      }}
-                    />
-                  </Box>
-                  <Divider />
-                </Box>
-              </Grid>
-              <Grid sx={{ marginTop: '35px' }}>
-                <Stack direction="row" justifyContent="flex-end" spacing={2} paddingTop={1}>
-                  <Button variant="contained" color="error" onClick={Cancel}>
-                    Cancel
-                  </Button>
-                  <Button variant="contained" onClick={Save}>
-                    Save
-                  </Button>
-                </Stack>
-              </Grid>
-            </>
+            <Grid item xs={12}>
+              <Typography sx={{ color: '#8C8C8C' }}>Company Name</Typography>
+              <TextField sx={{ width: '100%' }} value={name} required onChange={(e) => setName(e.target.value)} />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography sx={{ color: '#8C8C8C' }}>Title</Typography>
+              <TextField sx={{ width: '100%' }} value={title} required onChange={(e) => setTitle(e.target.value)} />
+            </Grid>
+            <Grid item xs={6}>
+              <Typography sx={{ color: '#8C8C8C' }}>Job Type</Typography>
+              {/* <TextField sx={{ width: '100%' }} value={type} required onChange={(e) => setJobType(e.target.value)} /> */}
+              <FormControl sx={{ width: '100%' }}>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={type}
+                  onChange={handleChangeJobType}
+                  placeholder="job type"
+                >
+                  <MenuItem value={0}>Full time</MenuItem>
+                  <MenuItem value={1}>Part time </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography sx={{ color: '#8C8C8C' }}>Experience Level</Typography>
+              <FormControl sx={{ width: '100%' }}>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={level}
+                  onChange={handleChangeLevel}
+                  placeholder="community"
+                >
+                  <MenuItem value={0}>Beginner</MenuItem>
+                  <MenuItem value={1}>Intermediate </MenuItem>
+                  <MenuItem value={2}>Professional </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography sx={{ color: '#8C8C8C' }}>Location</Typography>
+              <TextField sx={{ width: '100%' }} value={location} required onChange={(e) => setLocation(e.target.value)} />
+            </Grid>
+            <Grid item xs={6}>
+              <Typography sx={{ color: '#8C8C8C' }}>End Date</Typography>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  format="YYYY-MM-DD"
+                  value={end_date}
+                  // defaultValue={dayjs(surveyInfo?.endDate)}
+                  sx={{ width: '100%' }}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography sx={{ color: '#8C8C8C' }}>Target Community</Typography>
+              <FormControl sx={{ width: '100%' }}>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={community}
+                  onChange={handleChangeCommunity}
+                  placeholder="level"
+                >
+                  {communityList.map((com, index) => (
+                    <MenuItem value={com.id} key={index}>
+                      {com.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography sx={{ color: '#8C8C8C' }}>Application Link</Typography>
+              <TextField sx={{ width: '100%' }} value={application} required onChange={(e) => setApplication(e.target.value)} />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography sx={{ color: '#8C8C8C' }}>Job Description</Typography>
+              <Divider />
+              <Box>
+                <MUIRichTextEditor
+                  label="Start typing..."
+                  required
+                  onChange={(value) => {
+                    const content = JSON.stringify(convertToRaw(value.getCurrentContent()));
+                    setDescription(content);
+                  }}
+                />
+              </Box>
+              <Divider />
+            </Grid>
+            <Grid sx={{ marginTop: '35px' }} container>
+              <Stack direction="row" justifyContent="flex-end" spacing={2} paddingTop={1} sx={{ width: '100%' }}>
+                <Button variant="contained" color="error" onClick={Cancel}>
+                  Cancel
+                </Button>
+                <Button variant="contained" onClick={Save}>
+                  Save
+                </Button>
+              </Stack>
+            </Grid>
           </Grid>
         </Box>
       </Modal>

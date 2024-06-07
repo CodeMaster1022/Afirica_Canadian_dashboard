@@ -23,7 +23,6 @@ export const getStatus = () => async (dispatch) => {
 
   try {
     const result = await axiosInstance.get('/admin/status/');
-    console.log(result.data.totalCount, 'This is the status');
     if (result.data) {
       dispatch(getStatusSuccess(result.data.data));
       dispatch(getPaginationState(result.data));
@@ -43,7 +42,6 @@ export const getOptionStatus = (rowsPerPage, newPage) => async (dispatch) => {
         itemsPerPage: rowsPerPage
       }
     });
-    console.log(result);
     if (result.data) {
       dispatch(getStatusSuccess(result.data.data));
     }
@@ -133,7 +131,6 @@ export const getStatusByUser = (id) => async (dispatch) => {
 
   try {
     const result = await axiosInstance.get(`/posts/posts/status/${id}`);
-    console.log(result);
     if (result.data) {
       dispatch(getStatusDetailedSuccess(result.data.data));
     }
@@ -142,7 +139,6 @@ export const getStatusByUser = (id) => async (dispatch) => {
   }
 };
 export const statusApprove = (id) => async (dispatch) => {
-  console.log('reject');
   const axiosInstance = useAxios();
   dispatch(getRequest());
   try {

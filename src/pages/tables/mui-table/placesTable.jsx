@@ -157,7 +157,6 @@ export default function PlacesTable({ rows, source, getMoreOption, totalCount, t
     dispatch(getMoreOption(rowsPerPage, newPage + 1));
   };
   const handleAction = (id, action, source) => {
-    console.log(id);
     Swal.fire({
       title: `Do you want to ${action} this user?`,
       showDenyButton: true,

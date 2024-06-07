@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { getColor, layersUtils, getCenterOfGeoJson } from '../mapUtils';
 
 const AlbertaMap = ({ regionName = {}, regionFlag = '' }) => {
-  console.log(regionName, regionFlag);
   // const COUNTRY_VIEW_ID = regionFlag;
   // console.log(COUNTRY_VIEW_ID);
 
@@ -25,6 +24,11 @@ const AlbertaMap = ({ regionName = {}, regionFlag = '' }) => {
     if (!regionName.Objects[featureId]) return;
     setGeoJsonId(featureId);
   };
+  // const mouseOver = (e) => {
+  //   const content = e.target.feature.NAME_2;
+  //   if (!regionName.Objects[featureId]) return;
+  //   console.log(content);
+  // };
 
   return (
     <>

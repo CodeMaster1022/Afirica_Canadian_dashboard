@@ -16,7 +16,7 @@ export default function Surveys() {
     const fetchData = async () => {
       try {
         await axiosInstance.get('/admin/surveys/').then((res) => {
-          console.log(res.data.data,"as");
+          console.log(res.data.data, 'as');
           setRowData(res.data.data);
         });
       } catch (error) {
@@ -24,6 +24,7 @@ export default function Surveys() {
       }
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const headers = [

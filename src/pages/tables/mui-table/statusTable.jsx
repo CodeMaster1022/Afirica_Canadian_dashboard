@@ -145,7 +145,6 @@ export default function UpdatesTable() {
     dispatch(getOptionStatus(rowsPerPage, newPage + 1));
   };
   const handleAction = (id, action) => {
-    console.log(id);
     Swal.fire({
       title: `Do you want to ${action} this user?`,
       showDenyButton: true,

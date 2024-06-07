@@ -145,7 +145,6 @@ export default function UpdatesTable({ rows, source }) {
     setPage(newPage);
   };
   const handleAction = (id, action, source) => {
-    console.log(id);
     Swal.fire({
       title: `Do you want to ${action} this user?`,
       showDenyButton: true,

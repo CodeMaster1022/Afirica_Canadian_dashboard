@@ -128,7 +128,6 @@ export default function UsersTable() {
   const dispatch = useDispatch();
   // Toast Message
   const handleAction = (id, action) => {
-    console.log('reactiveate');
     Swal.fire({
       title: `Do you want to ${action} this user?`,
       showDenyButton: true,
@@ -149,7 +148,6 @@ export default function UsersTable() {
   const { usersList, total_count, tablePage, items_per_page } = useSelector((state) => state.users);
   const [user, setUser] = useState({});
   const handleButtonClick = (rowData) => {
-    console.log(user);
     profileModalOpen();
     setUser(rowData);
   };
@@ -179,7 +177,6 @@ export default function UsersTable() {
   };
 
   const handleChangePage = (event, newPage) => {
-    console.log(newPage);
     setPage(newPage);
     dispatch(getOptionUsers(rowsPerPage, newPage + 1));
   };

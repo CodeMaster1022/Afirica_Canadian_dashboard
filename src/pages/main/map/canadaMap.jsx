@@ -6,10 +6,8 @@ import { getFilter, setTabNumber } from 'redux/mapRelated/mapSlice';
 const CanadaMap = () => {
   const dispatch = useDispatch();
   const mapClickHandler = (event) => {
-    console.log('*************');
     const id = event.currentTarget.id;
     console.log('id => ', id);
-    // setFilter(id);
     dispatch(getFilter(id));
     dispatch(setTabNumber(1));
   };

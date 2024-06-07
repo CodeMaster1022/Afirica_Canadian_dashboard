@@ -18,6 +18,9 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getCommunity } from 'redux/communityRelated/communityHandle';
@@ -31,7 +34,6 @@ import { ThemeMode } from 'config';
 
 import CameraOutlined from '@ant-design/icons/CameraOutlined';
 import userImage from 'assets/images/users/avatar-1.png';
-import { setgroups } from 'process';
 
 const AddNewEvent = ({ modalOpen, modalClose, currentEvent, action }) => {
   const dispatch = useDispatch();
@@ -47,7 +49,7 @@ const AddNewEvent = ({ modalOpen, modalClose, currentEvent, action }) => {
   const [title, setTitle] = useState();
   const [venue, setVenue] = useState('');
   const [price, setPrice] = useState('');
-  const [eventHappeningDate, setEventHappeningDate] = useState('2024-06-30 01:00:00');
+  const [eventHappeningDate, setEventHappeningDate] = useState(null);
   const [community, setCommunity] = useState('');
   const [eventUrl, setUrl] = useState('http://localhost:3000/events');
   const [video, setVideo] = useState('Hello');
@@ -56,7 +58,7 @@ const AddNewEvent = ({ modalOpen, modalClose, currentEvent, action }) => {
   const [location, setLocation] = useState('Lahore');
   const [user, setUser] = useState('594aad28-d5a2-408b-82d3-35641e2db6b5');
   const [documnet, setDocument] = useState('Hello');
-  const [eventExpiryDate, setEventExpiryDate] = useState('2024-06-30 01:00:00');
+  const [eventExpiryDate, setEventExpiryDate] = useState(null);
   const Save = () => {
     if (imageUrl !== '' && title !== '' && description !== '' && community !== '') {
       if (action === 'create')
@@ -184,46 +186,37 @@ const AddNewEvent = ({ modalOpen, modalClose, currentEvent, action }) => {
               </Box>
             </Grid>
             <>
-              <Grid item xs={12}>
-                <Grid>
-                  <Box sx={{ paddingX: '5px' }}>
-                    <Typography sx={{ color: '#8C8C8C' }}>Title</Typography>
-                    <TextField sx={{ width: '100%' }} value={title} required onChange={(e) => setTitle(e.target.value)} />
-                  </Box>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <Typography sx={{ color: '#8C8C8C' }}>Title</Typography>
+                  <TextField sx={{ width: '100%' }} value={title} required onChange={(e) => setTitle(e.target.value)} />
                 </Grid>
-                <Grid>
-                  <Box sx={{ paddingX: '5px' }}>
-                    <Typography sx={{ color: '#8C8C8C' }}>Venue</Typography>
-                    <TextField sx={{ width: '100%' }} value={venue} required onChange={(e) => setVenue(e.target.value)} />
-                  </Box>
+                <Grid item xs={12}>
+                  <Typography sx={{ color: '#8C8C8C' }}>Venue</Typography>
+                  <TextField sx={{ width: '100%' }} value={venue} required onChange={(e) => setVenue(e.target.value)} />
                 </Grid>
-                <Grid>
-                  <Box sx={{ paddingX: '5px' }}>
-                    <Typography sx={{ color: '#8C8C8C' }}>Price</Typography>
-                    <TextField sx={{ width: '100%' }} value={price} required onChange={(e) => setPrice(e.target.value)} />
-                  </Box>
+                <Grid item xs={12}>
+                  <Typography sx={{ color: '#8C8C8C', paddingTop: '5px' }}>Price</Typography>
+                  <TextField sx={{ width: '100%' }} value={price} required onChange={(e) => setPrice(e.target.value)} />
                 </Grid>
-                <Grid>
-                  <Box sx={{ paddingX: '5px' }}>
-                    <Typography sx={{ color: '#8C8C8C' }}>Registration Link</Typography>
-                    <TextField sx={{ width: '100%' }} value={eventUrl} required onChange={(e) => setUrl(e.target.value)} />
-                  </Box>
+                <Grid item xs={12}>
+                  <Typography sx={{ color: '#8C8C8C', paddingTop: '5px' }}>Registration Link</Typography>
+                  <TextField sx={{ width: '100%' }} value={eventUrl} required onChange={(e) => setUrl(e.target.value)} />
                 </Grid>
-                <Grid>
-                  <Box sx={{ paddingX: '5px' }}>
-                    <Typography sx={{ color: '#8C8C8C' }}>Date</Typography>
-                    <TextField
-                      sx={{ width: '100%' }}
+                <Grid item xs={6}>
+                  <Typography sx={{ color: '#8C8C8C', paddingTop: '5px' }}>Date</Typography>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      format="YYYY-MM-DD"
                       value={eventHappeningDate}
-                      required
+                      // defaultValue={dayjs(surveyInfo?.endDate)}
+                      sx={{ width: '100%' }}
                       onChange={(e) => setEventHappeningDate(e.target.value)}
                     />
-                  </Box>
+                  </LocalizationProvider>
                 </Grid>
-              </Grid>
-              <Grid item xs={12}>
-                <Box sx={{ paddingX: '5px' }}>
-                  <Typography sx={{ color: '#8C8C8C' }}>Target Community</Typography>
+                <Grid item xs={6}>
+                  <Typography sx={{ color: '#8C8C8C', paddingTop: '5px' }}>Target Community</Typography>
                   <FormControl sx={{ width: '100%' }}>
                     <Select
                       labelId="demo-simple-select-label"
@@ -239,7 +232,7 @@ const AddNewEvent = ({ modalOpen, modalClose, currentEvent, action }) => {
                       ))}
                     </Select>
                   </FormControl>
-                </Box>
+                </Grid>
               </Grid>
               <Grid container>
                 <Box sx={{ padding: '10px' }}>
@@ -258,8 +251,8 @@ const AddNewEvent = ({ modalOpen, modalClose, currentEvent, action }) => {
                   <Divider />
                 </Box>
               </Grid>
-              <Grid sx={{ marginTop: '35px' }}>
-                <Stack direction="row" justifyContent="flex-end" spacing={2} paddingTop={1}>
+              <Grid sx={{ marginTop: '35px' }} container>
+                <Stack direction="row" justifyContent="flex-end" spacing={2} paddingTop={1} sx={{ width: '100%' }}>
                   <Button variant="contained" color="error" onClick={Cancel}>
                     Cancel
                   </Button>

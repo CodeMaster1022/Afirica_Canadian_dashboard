@@ -40,12 +40,6 @@ export default function Community() {
     };
     fetchData();
   }, [search]);
-  useEffect(() => {
-    console.log('search is changed', search);
-  }, [search]);
-  useEffect(() => {
-    console.log('123------------------------->', jsonData, search);
-  }, [jsonData, search]);
 
   const mapConfiguration = {
     mapboxAccessToken: import.meta.env.VITE_APP_MAPBOX_ACCESS_TOKEN,
@@ -114,18 +108,3 @@ export default function Community() {
     </>
   );
 }
-// useEffect(() => {
-//   const fetchData = async () => {
-//     try {
-//       if (index) {
-//         const response = await axios.get(`../main/map/province/dataSet/${index}.json`);
-//       } else {
-//         const response = await axios.get(`../main/map/province/dataSet/Alberta.json`);
-//       }
-//       setJsonData(response.data);
-//     } catch (error) {
-//       console.error('error fetch Data', error);
-//     }
-//   };
-//   fetchData();
-// }, []);
