@@ -30,7 +30,6 @@ export default function LogoMain() {
 const useStyles = makeStyles(() => ({
   logo: {
     position: 'relative',
-    zIndex: 2,
     backgroundImage: `url(${logo})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'contain cover',
