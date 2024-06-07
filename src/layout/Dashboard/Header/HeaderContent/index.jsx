@@ -17,10 +17,8 @@ import Breadcrumbs from 'components/@extended/Breadcrumbs';
 import logo from 'assets/images/icons/Logo-2.svg';
 // import { width } from '@mui/system';
 // ==============================|| HEADER - CONTENT ||============================== //
-import { makeStyles } from '@material-ui/core/styles';
 export default function HeaderContent() {
   const { menuOrientation } = useConfig();
-  const classes = useStyles();
   const downLG = useMediaQuery((theme) => theme.breakpoints.down('lg'));
   const downSM = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
@@ -34,7 +32,7 @@ export default function HeaderContent() {
       ) : (
         <>
           <Box width={400}>
-            <Box className={classes.logo}></Box>
+            <img src={logo} alt="Mantis" width="250" />
           </Box>
         </>
       )}
@@ -49,14 +47,3 @@ export default function HeaderContent() {
     </>
   );
 }
-const useStyles = makeStyles(() => ({
-  logo: {
-    position: 'relative',
-    backgroundImage: `url(${logo})`,
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'contain cover',
-    backgroundPosition: 'center',
-    height: '70px',
-    width: '250px'
-  }
-}));

@@ -1,8 +1,6 @@
 // material-ui
 
 // project-import
-import { Box } from '@mui/material';
-import { makeStyles } from '@material-ui/core/styles';
 /**
  * if you want to use image instead of <svg> uncomment following.
  *
@@ -14,7 +12,6 @@ import { makeStyles } from '@material-ui/core/styles';
 // ==============================|| LOGO SVG ||============================== //
 import logo from 'assets/images/icons/Logo-2.svg';
 export default function LogoMain() {
-  const classes = useStyles();
   return (
     /**
      * if you want to use image instead of svg uncomment following, and comment out <svg> element.
@@ -23,18 +20,7 @@ export default function LogoMain() {
      *
      */
     <>
-      <Box className={classes.logo}></Box>
+      <img src={logo} alt="Mantis" width="250" />
     </>
   );
 }
-const useStyles = makeStyles(() => ({
-  logo: {
-    position: 'relative',
-    backgroundImage: `url(${logo})`,
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'contain cover',
-    backgroundPosition: 'center',
-    height: '90px',
-    width: '270px'
-  }
-}));
