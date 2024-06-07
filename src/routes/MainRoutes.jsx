@@ -6,16 +6,18 @@ import DashboardLayout from 'layout/Dashboard';
 // import PagesLayout from 'layout/Pages';
 // import SimpleLayout from 'layout/Simple';
 const Dashboard = Loadable(lazy(() => import('pages/main/dashboard')));
-const Group = Loadable(lazy(() => import('pages/main/group')));
+const Group = Loadable(lazy(() => import('pages/main/group/group')));
 // const AppContactUS = Loadable(lazy(() => import('pages/contact-us')));
-const Surveys = Loadable(lazy(() => import('pages/main/surveys')));
-const Users = Loadable(lazy(() => import('pages/main/users')));
-const Updates = Loadable(lazy(() => import('pages/main/updates')));
+const Surveys = Loadable(lazy(() => import('pages/main/survey/surveys')));
+const Users = Loadable(lazy(() => import('pages/main/user/users')));
+const Updates = Loadable(lazy(() => import('pages/main/updates/updates')));
 const Logout = Loadable(lazy(() => import('pages/logout')));
-const Community = Loadable(lazy(() => import('pages/main/community')));
-const Events = Loadable(lazy(() => import('pages/main/events')));
-const Jobs = Loadable(lazy(() => import('pages/main/jobs')));
-const Education = Loadable(lazy(() => import('pages/main/education')));
+const Community = Loadable(lazy(() => import('pages/main/community/community')));
+const Events = Loadable(lazy(() => import('pages/main/event/events')));
+const Jobs = Loadable(lazy(() => import('pages/main/job/jobs')));
+const Education = Loadable(lazy(() => import('pages/main/education/education')));
+const Error404 = Loadable(lazy(() => import('pages/maintenance/404')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -64,6 +66,14 @@ const MainRoutes = {
         {
           path: 'logout',
           element: <Logout />
+        },
+        {
+          path: 'services',
+          element: <Error404 />
+        },
+        {
+          path: 'settings',
+          element: <Error404 />
         }
       ]
     }

@@ -65,14 +65,6 @@ const secondary = {
       type: 'item',
       url: '/services',
       icon: icons.BankOutlined
-    },
-    {
-      id: 'report',
-      title: 'Reports',
-      type: 'item',
-      url: '/reports',
-      icon: icons.BookOutlined,
-      target: true
     }
   ]
 };

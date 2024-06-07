@@ -31,9 +31,7 @@ export default function HeaderContent() {
         </Box>
       ) : (
         <>
-          <Box width={400}>
-            <img src={logo} alt="Mantis" width="250" />
-          </Box>
+          <img src={logo} alt="Mantis" width="310" />
         </>
       )}
       {downLG && <Box sx={{ width: '100%', ml: 1 }} />}
