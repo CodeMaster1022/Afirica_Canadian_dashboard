@@ -56,6 +56,7 @@ const AlbertaMap = ({ regionName = {}, regionFlag = '' }) => {
     });
   }
 
+  // eslint-disable-next-line no-unused-vars
   function geoJSONStyle(feature) {
     return {
       color: '#1f2021',

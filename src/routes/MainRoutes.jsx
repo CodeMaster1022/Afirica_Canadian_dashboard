@@ -15,6 +15,7 @@ const Logout = Loadable(lazy(() => import('pages/logout')));
 const Community = Loadable(lazy(() => import('pages/main/community')));
 const Events = Loadable(lazy(() => import('pages/main/events')));
 const Jobs = Loadable(lazy(() => import('pages/main/jobs')));
+const Education = Loadable(lazy(() => import('pages/main/education')));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -55,6 +56,10 @@ const MainRoutes = {
         {
           path: 'jobs',
           element: <Jobs />
+        },
+        {
+          path: 'education',
+          element: <Education />
         },
         {
           path: 'logout',
