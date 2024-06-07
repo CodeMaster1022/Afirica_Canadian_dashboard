@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "target": "esnext",
+    "module": "commonjs",
+    "baseUrl": "src"
+  },
+  "include": ["src/**/*", "src/pages/tables/mui-table/.jsx"],
+  "exclude": ["node_modules"]
+}

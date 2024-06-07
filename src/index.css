@@ -1,0 +1,15 @@
+.MuiTabs-root {
+  .MuiTabs-fixed {
+    .MuiTabs-flexContainer {
+      .MuiButtonBase-root {
+        // add styles for the tab buttons here
+      }
+
+      &.Mui-selected {
+        span {
+          border-bottom: 3px solid red;
+        }
+      }
+    }
+  }
+}
