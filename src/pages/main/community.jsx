@@ -101,7 +101,7 @@ export default function Community() {
         </MainCard>
       </TabPanel>
       <TabPanel value={tabnumber} index={1}>
-        {search === 'Alberta' && <AlbertaMap regionName={jsonData} regionFlag={query} />}
+        {search === 'Alberta' && Object.keys(jsonData).length > 0 && <AlbertaMap regionName={jsonData} regionFlag={query} />}
         {search !== 'Alberta' && search !== '' && Object.keys(jsonData).length > 0 && (
           <AlbertaMap regionName={jsonData} regionFlag={search} />
         )}
