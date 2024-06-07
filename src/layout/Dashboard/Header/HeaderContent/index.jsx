@@ -26,7 +26,7 @@ export default function HeaderContent() {
     <>
       {downSM && <Box width={50}></Box>}
       {!downSM ? (
-        <Box width={400} sx={{ marginLeft: '10%' }}>
+        <Box width={700} sx={{ marginLeft: '10%' }}>
           <Breadcrumbs />
         </Box>
       ) : (
