@@ -14,33 +14,37 @@ import AlbertaMap from '../map/province/Alberta/Alberta';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { getCommunity } from 'redux/communityRelated/communityHandle';
-
+import { getCountyName } from 'redux/mapRelated/mapSlice';
 export default function Community() {
   // Fetch Users Data
   const dispatch = useDispatch();
-  const { search, tabnumber } = useSelector((state) => state.mapFilter);
+  const { search, tabnumber, countyName } = useSelector((state) => state.mapFilter);
   const [jsonData, setJsonData] = useState({});
   const query = 'Alberta';
   useEffect(() => {
     dispatch(getCommunity());
   }, [dispatch]);
   useEffect(() => {
+    console.log('countyname=====>', countyName);
     const fetchData = async () => {
       try {
         if (search === '') {
-          const response = await axios.get(`/dataSet/${query}.json`);
+          const response = await axios.get(`/dataSet/${query}/${query}.json`);
           setJsonData(response.data);
+        } else if (search !== '' && countyName === '') {
+          const response = await axios.get(`/dataSet/${search}/${search}.json`);
+          setJsonData(response.data);
+        } else {
+          const response = await axios.get(`/dataSet/${search}/${countyName}.json`);
+          setJsonData(response.data);
+          console.log(response.data);
         }
-        // else {
-        //   const response = await axios.get(`/dataSet/${search}.json`);
-        //   setJsonData(response.data);
-        // }
       } catch (error) {
         console.error('error fetch Data', error);
       }
     };
     fetchData();
-  }, [search]);
+  }, [search, countyName]);
 
   const mapConfiguration = {
     mapboxAccessToken: import.meta.env.VITE_APP_MAPBOX_ACCESS_TOKEN,
@@ -49,6 +53,9 @@ export default function Community() {
   const Tab_Titles = ['Province', 'Boundary', 'Map'];
   const handleChange = (event, newValue) => {
     dispatch(setTabNumber(newValue));
+    if (newValue !== 1) {
+      dispatch(getCountyName(''));
+    }
   };
   const a11yProps = (index) => {
     return {
@@ -97,14 +104,15 @@ export default function Community() {
       </TabPanel>
       <TabPanel value={tabnumber} index={1}>
         {search === 'Alberta' && Object.keys(jsonData).length > 0 && <AlbertaMap regionName={jsonData} regionFlag={query} />}
-        {/* {search !== 'Alberta' && search !== '' && Object.keys(jsonData).length > 0 && (
+        {search !== 'Alberta' && search !== '' && Object.keys(jsonData).length > 0 && countyName === '' && (
           <AlbertaMap regionName={jsonData} regionFlag={search} />
-        )} */}
+        )}
+        {search !== '' && Object.keys(jsonData).length > 0 && countyName !== '' && (
+          <AlbertaMap regionName={jsonData} regionFlag={countyName} />
+        )}
       </TabPanel>
       <TabPanel value={tabnumber} index={2}>
-        <MainCard>
-          <MarkersPopups data={countries} search={search} {...mapConfiguration} />
-        </MainCard>
+        <MainCard>{/* <MarkersPopups data={countries} search={search} {...mapConfiguration} /> */}</MainCard>
       </TabPanel>
     </>
   );

@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { countries } from 'data/location';
 const initialState = {
   search: '',
+  countyName: '',
   countySearch: '',
   data: countries,
   countAlbertaMember: [],
@@ -22,10 +23,13 @@ const mapFilterSlice = createSlice({
     getCountyFilter: (state, action) => {
       state.countySearch = action.payload;
     },
+    getCountyName: (state, action) => {
+      state.countyName = action.payload;
+    },
     setTabNumber: (state, action) => {
       state.tabnumber = action.payload;
     }
   }
 });
-export const { getFilter, setTabNumber, getAlbertaMember, getCountyFilter } = mapFilterSlice.actions;
+export const { getFilter, setTabNumber, getAlbertaMember, getCountyFilter, getCountyName } = mapFilterSlice.actions;
 export const mapFilterReducer = mapFilterSlice.reducer;

@@ -1,6 +1,5 @@
 import center from '@turf/center';
 import L from 'leaflet';
-
 export function getColor(d) {
   return d > 25 ? '#014167' : d > 20 ? '#01a5c9' : d > 15 ? '#91eaf2' : d > 10 ? '#e3fbfd' : d > 5 ? '#91eaf2' : '#014167';
 }
@@ -21,7 +20,7 @@ export function layersUtils(geoJsonRef, mapRef) {
     const content = `<div><h3>User information</h3><p>Country:${e.target.feature.properties.COUNTRY}: 
     </p><p>Province Name:${e.target.feature.properties.NAME_1}<p/>
     </p><p>Users:${e.target.feature.properties.USER_COUNT}<p/>
-    <p>Type:${e.target.feature.properties.TYPE_2}</p>`; // You can add any HTML markup here
+    <p>Type:${e.target.feature.properties.GID_2}</p>`; // You can add any HTML markup here
     layer.bindPopup(content).openPopup();
     if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
       layer.bringToFront();

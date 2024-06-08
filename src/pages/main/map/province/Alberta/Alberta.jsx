@@ -1,13 +1,14 @@
 import { MapContainer, GeoJSON, TileLayer, ScaleControl } from 'react-leaflet';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
 import PropTypes from 'prop-types';
 import { getColor, layersUtils, getCenterOfGeoJson } from '../mapUtils';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { getCountyName } from 'redux/mapRelated/mapSlice';
 const AlbertaMap = ({ regionName = {}, regionFlag = '' }) => {
+  const dispatch = useDispatch();
   // const COUNTRY_VIEW_ID = regionFlag;
   // console.log(COUNTRY_VIEW_ID);
-
   const mapStyle = { height: '100vh', width: '100vw' };
   const [geoJsonId, setGeoJsonId] = useState(regionFlag);
   const geoJson = regionName.Objects[geoJsonId];
@@ -20,7 +21,8 @@ const AlbertaMap = ({ regionName = {}, regionFlag = '' }) => {
     return <></>;
   }
   const onDrillDown = (e) => {
-    const featureId = e.target.feature.id;
+    const featureId = e.target.feature.properties.GID_2;
+    dispatch(getCountyName(featureId));
     if (!regionName.Objects[featureId]) return;
     setGeoJsonId(featureId);
   };
