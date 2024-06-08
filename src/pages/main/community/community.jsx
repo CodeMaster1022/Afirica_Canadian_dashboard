@@ -30,10 +30,11 @@ export default function Community() {
         if (search === '') {
           const response = await axios.get(`/dataSet/${query}.json`);
           setJsonData(response.data);
-        } else {
-          const response = await axios.get(`/dataSet/${search}.json`);
-          setJsonData(response.data);
         }
+        // else {
+        //   const response = await axios.get(`/dataSet/${search}.json`);
+        //   setJsonData(response.data);
+        // }
       } catch (error) {
         console.error('error fetch Data', error);
       }
@@ -96,9 +97,9 @@ export default function Community() {
       </TabPanel>
       <TabPanel value={tabnumber} index={1}>
         {search === 'Alberta' && Object.keys(jsonData).length > 0 && <AlbertaMap regionName={jsonData} regionFlag={query} />}
-        {search !== 'Alberta' && search !== '' && Object.keys(jsonData).length > 0 && (
+        {/* {search !== 'Alberta' && search !== '' && Object.keys(jsonData).length > 0 && (
           <AlbertaMap regionName={jsonData} regionFlag={search} />
-        )}
+        )} */}
       </TabPanel>
       <TabPanel value={tabnumber} index={2}>
         <MainCard>

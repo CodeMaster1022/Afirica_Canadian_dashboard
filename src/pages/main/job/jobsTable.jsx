@@ -9,6 +9,7 @@ import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getAlljobs } from 'redux/jobRelated/jobHandle';
+
 // project imports
 import EnhancedTableHead from '../../../utils/enhanceFunction';
 import MainCard from 'components/MainCard';

@@ -11,7 +11,6 @@ import Typography from '@mui/material/Typography';
 import { APP_DEFAULT_PATH } from 'config';
 
 // assets
-import error404 from 'assets/images/maintenance/Error404.png';
 import TwoCone from 'assets/images/maintenance/TwoCone.png';
 
 // ==============================|| ERROR 404 - MAIN ||============================== //

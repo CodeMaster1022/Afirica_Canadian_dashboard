@@ -8,14 +8,14 @@ import DashboardLayout from 'layout/Dashboard';
 const Dashboard = Loadable(lazy(() => import('pages/main/dashboard')));
 const Group = Loadable(lazy(() => import('pages/main/group/group')));
 // const AppContactUS = Loadable(lazy(() => import('pages/contact-us')));
-const Surveys = Loadable(lazy(() => import('pages/main/survey/surveys')));
+const Surveys = Loadable(lazy(() => import('pages/secondary/survey/surveys')));
 const Users = Loadable(lazy(() => import('pages/main/user/users')));
 const Updates = Loadable(lazy(() => import('pages/main/updates/updates')));
 const Logout = Loadable(lazy(() => import('pages/logout')));
 const Community = Loadable(lazy(() => import('pages/main/community/community')));
 const Events = Loadable(lazy(() => import('pages/main/event/events')));
 const Jobs = Loadable(lazy(() => import('pages/main/job/jobs')));
-const Education = Loadable(lazy(() => import('pages/main/education/education')));
+const Education = Loadable(lazy(() => import('pages/secondary/education/education')));
 const Error404 = Loadable(lazy(() => import('pages/maintenance/404')));
 
 // ==============================|| MAIN ROUTING ||============================== //

@@ -12,7 +12,6 @@ export function getCenterOfGeoJson(geoJson) {
 export function layersUtils(geoJsonRef, mapRef) {
   function highlightOnClick(e) {
     var layer = e.target;
-    console.log(layer);
     layer.setStyle({
       weight: 2,
       color: 'black',
