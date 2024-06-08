@@ -4,6 +4,7 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Box from '@mui/material/Box';
+import { visuallyHidden } from '@mui/utils';
 export default function EnhancedTableHead({ order, orderBy, onRequestSort, headCells }) {
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
