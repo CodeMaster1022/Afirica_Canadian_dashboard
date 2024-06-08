@@ -6,8 +6,9 @@ import { getColor, layersUtils, getCenterOfGeoJson } from '../mapUtils';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCountyName } from 'redux/mapRelated/mapSlice';
 const AlbertaMap = ({ regionName = {}, regionFlag = '' }) => {
+  const { countyName } = useSelector((state) => state.mapFilter);
   const dispatch = useDispatch();
-  // const COUNTRY_VIEW_ID = regionFlag;
+  const COUNTRY_VIEW_ID = countyName;
   // console.log(COUNTRY_VIEW_ID);
   const mapStyle = { height: '100vh', width: '100vw' };
   const [geoJsonId, setGeoJsonId] = useState(regionFlag);
@@ -21,8 +22,13 @@ const AlbertaMap = ({ regionName = {}, regionFlag = '' }) => {
     return <></>;
   }
   const onDrillDown = (e) => {
-    const featureId = e.target.feature.properties.GID_2;
-    dispatch(getCountyName(featureId));
+    let featureId = '';
+    if (countyName === '') {
+      featureId = e.target.feature.properties.GID_2;
+      dispatch(getCountyName(featureId));
+    } else {
+      featureId = e.target.feature.id;
+    }
     if (!regionName.Objects[featureId]) return;
     setGeoJsonId(featureId);
   };
@@ -34,9 +40,9 @@ const AlbertaMap = ({ regionName = {}, regionFlag = '' }) => {
 
   return (
     <>
-      {/* <button onClick={() => setGeoJsonId(COUNTRY_VIEW_ID)} className="backButton">
+      <button onClick={() => setGeoJsonId(COUNTRY_VIEW_ID)} className="backButton">
         Back To City View
-      </button> */}
+      </button>
       {Object.keys(regionName).length > 0 && regionFlag !== '' && (
         <MapContainer ref={mapRef} center={mapCenter} zoom={5} style={mapStyle}>
           <TileLayer

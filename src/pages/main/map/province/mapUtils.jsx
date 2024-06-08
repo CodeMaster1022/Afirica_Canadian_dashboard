@@ -17,10 +17,11 @@ export function layersUtils(geoJsonRef, mapRef) {
       dashArray: '3',
       fillOpacity: 0.7
     });
-    const content = `<div><h3>User information</h3><p>Country:${e.target.feature.properties.COUNTRY}: 
-    </p><p>Province Name:${e.target.feature.properties.NAME_1}<p/>
-    </p><p>Users:${e.target.feature.properties.USER_COUNT}<p/>
-    <p>Type:${e.target.feature.properties.GID_2}</p>`; // You can add any HTML markup here
+    // const content = `<div><h3>User information</h3><p>Country:${e.target.feature.properties.COUNTRY}:
+    // </p><p>Province Name:${e.target.feature.properties.NAME_1}<p/>
+    // </p><p>Users:${e.target.feature.properties.USER_COUNT}<p/>
+    // <p>Type:${e.target.feature.properties.GID_2}</p>`; // You can add any HTML markup here
+    const content = `<div><h3>User information</h3></div>`;
     layer.bindPopup(content).openPopup();
     if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
       layer.bringToFront();
