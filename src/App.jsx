@@ -24,7 +24,7 @@ const App = () => {
   useEffect(() => {
     const keycloak = new Keycloak({
       realm: 'african-community-realm',
-      url: 'https://api.accalberta.ca/keycloak-auth/',
+      url: 'https://api.accalberta.ca/keycloak-auth/'
       // clientId: 'frontend-client'
       // clientId: 'test2'
     });
