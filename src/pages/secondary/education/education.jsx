@@ -7,18 +7,14 @@ import EducationTable from './educationTable';
 import AddNewEducation from './modal/addNewEducation';
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
-import { getPlaces } from 'redux/placesRelated/placesHandle';
-import { getResource } from 'redux/resourceRelated/resourceHandle';
-import { getStatus } from 'redux/statusRelated/statusHandle';
+import { getEducation } from 'redux/education/educationHandle';
 
 export default function Updates() {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getPlaces());
-    dispatch(getResource());
-    dispatch(getStatus());
+    dispatch(getEducation());
   }, [dispatch]);
-  const { resourceList, loading } = useSelector((state) => state.resource);
+  const { educationList, loading } = useSelector((state) => state.education);
   const [newUpdateOpen, setNewUpdateOpen] = useState(false);
   const newUpdateModalClose = () => setNewUpdateOpen(false);
 
@@ -30,7 +26,7 @@ export default function Updates() {
           Create New Update
         </Button>
       </Box>
-      <MainCard>{loading ? <RequestLoader /> : <EducationTable source="resource" rows={resourceList} />}</MainCard>
+      <MainCard>{loading ? <RequestLoader /> : <EducationTable rows={educationList} />}</MainCard>
       <AddNewEducation modalOpen={newUpdateOpen} modalClose={newUpdateModalClose} />
     </>
   );

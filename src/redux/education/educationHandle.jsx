@@ -1,5 +1,13 @@
 import useAxios from 'utils/useAxios';
-import { getRequest, getSuccess, getPaginationState, getSurveySuccess, getError } from './surveySlice';
+import {
+  getRequest,
+  getSuccess,
+  getPaginationState,
+  getEducationSuccess,
+  getEducationDetailedSuccess,
+  getEducationDetailedFailed,
+  getError
+} from './educationSlice';
 import Swal from 'sweetalert2';
 const Toast = Swal.mixin({
   toast: true,
@@ -8,27 +16,26 @@ const Toast = Swal.mixin({
   timer: 2500,
   timerProgressBar: true
 });
-export const getSurvey = (rowsPerPage, newPage) => async (dispatch) => {
+export const getEducation = (rowsPerPage, newPage) => async (dispatch) => {
   const axiosInstance = useAxios();
-  console.log('survey', rowsPerPage, newPage);
   dispatch(getRequest());
 
   try {
-    const result = await axiosInstance.get('/admin/surveys/', {
+    const result = await axiosInstance.get('/admin/education-materials/', {
       params: {
         page: newPage,
         items_per_page: rowsPerPage
       }
     });
     if (result.data) {
-      dispatch(getSurveySuccess(result.data.data));
+      dispatch(getEducationSuccess(result.data.data));
       dispatch(getPaginationState(result.data));
     }
   } catch (error) {
     dispatch(getError(error));
   }
 };
-export const surveyDelete = (id) => async (dispatch) => {
+export const educationDelete = (id) => async (dispatch) => {
   const axiosInstance = useAxios();
   dispatch(getRequest());
   try {
@@ -54,11 +61,12 @@ export const surveyDelete = (id) => async (dispatch) => {
     dispatch(getError(error.data));
   }
 };
-export const surveyCreate = (data) => async (dispatch) => {
+export const educationCreate = (data) => async (dispatch) => {
+  console.log(data);
   const axiosInstance = useAxios();
   dispatch(getRequest());
   try {
-    const response = await axiosInstance.post(`admin/surveys/create/`, data);
+    const response = await axiosInstance.post(`admin/education-materials/create/`, data);
     console.log(response);
     if (response.data) {
       dispatch(getSuccess());
@@ -80,11 +88,11 @@ export const surveyCreate = (data) => async (dispatch) => {
     dispatch(getError(error.data));
   }
 };
-export const surveyUpdate = (id, data) => async (dispatch) => {
+export const educationUpdate = (id, data) => async (dispatch) => {
   const axiosInstance = useAxios();
   dispatch(getRequest());
   try {
-    const response = await axiosInstance.patch(`admin/surveys/${id}/`, data);
+    const response = await axiosInstance.patch(`admin/education-materials/${id}/`, data);
     console.log(response);
     if (response.data) {
       dispatch(getSuccess());

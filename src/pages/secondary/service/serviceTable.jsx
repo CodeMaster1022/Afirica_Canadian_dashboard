@@ -1,30 +1,18 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 // material-ui
-import {
-  Box,
-  Table,
-  Divider,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableSortLabel,
-  TableContainer,
-  TableRow,
-  TablePagination
-} from '@mui/material';
-
-import { visuallyHidden } from '@mui/utils';
+import { Table, Divider, TableBody, TableCell, TableContainer, TableRow, TablePagination } from '@mui/material';
+import EnhancedTableHead from 'utils/enhanceFunction';
 import IconButton from 'components/@extended/IconButton';
 // assets
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
-import { eventDelete, getAllEvent, getEventById } from 'redux/eventRelated/eventHandle';
+import { serviceDelete, getService } from 'redux/serviceRelated/serviceHandle';
 // project imports
 import MainCard from 'components/MainCard';
-import ViewEvent from './modal/viewEvent';
+import ViewService from './modal/ViewService';
 // table filter
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -51,43 +39,12 @@ function stableSort(array, comparator) {
 
 // ==============================|| MUI TABLE - HEADER ||============================== //
 
-function EnhancedTableHead({ order, orderBy, onRequestSort }) {
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
-  return (
-    <TableHead>
-      <TableRow>
-        {headCells.map((headCell, index) => (
-          <TableCell
-            key={index}
-            align={headCell.numeric ? 'right' : 'center'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box sx={visuallyHidden}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</Box>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  );
-}
-
 // ==============================|| TABLE - DATA TABLE ||============================== //
 
-export default function EventTable() {
+export default function ServiceTable() {
   const dispatch = useDispatch();
 
-  const { eventList, total_count, tablePage, items_per_page } = useSelector((state) => state.event);
+  const { serviceList, total_count, tablePage, items_per_page } = useSelector((state) => state.service);
   // Fetch Data
   const [user, setUser] = useState({});
   const [order, setOrder] = React.useState('asc');
@@ -95,12 +52,12 @@ export default function EventTable() {
   const [page, setPage] = React.useState(0);
   const [dense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(items_per_page);
-  let data = stableSort(eventList, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  let data = stableSort(serviceList, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   // const [user, setUser] = useState({});
-  const handleButtonClick = (row) => {
-    profileModalOpen();
-    setUser(row);
-  };
+  // const handleButtonClick = (row) => {
+  //   profileModalOpen();
+  //   setUser(row);
+  // };
   const [profileOpen, setProfileOpen] = useState(false);
   const profileModalOpen = () => setProfileOpen(true);
   const profileModalClose = () => setProfileOpen(false);
@@ -114,10 +71,8 @@ export default function EventTable() {
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        if (action === 'delete') {
-          dispatch(eventDelete(id));
-          dispatch(getAllEvent(items_per_page, tablePage));
-        }
+        dispatch(serviceDelete(id));
+        dispatch(getService(items_per_page, tablePage));
       } else if (result.isDenied) {
         Swal.fire(`${action} was cancelled`, '', 'info');
       }
@@ -130,14 +85,14 @@ export default function EventTable() {
   };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    dispatch(getAllEvent(rowsPerPage, newPage + 1));
+    dispatch(getService(rowsPerPage, newPage + 1));
   };
 
   const handleChangeRowsPerPage = (event) => {
     console.log('new page');
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-    dispatch(getAllEvent(parseInt(event.target.value, 10), 1));
+    dispatch(getService(parseInt(event.target.value, 10), 1));
   };
 
   // avoid a layout jump when reaching the last page with empty rows.
@@ -149,7 +104,13 @@ export default function EventTable() {
         {/* table */}
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
-            <EnhancedTableHead order={order} orderBy={orderBy} onRequestSort={handleRequestSort} rowCount={total_count} />
+            <EnhancedTableHead
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+              rowCount={total_count}
+              headCells={headCells}
+            />
             <TableBody>
               {data.map((row, index) => {
                 /** make sure no display bugs if row isn't an OrderData object */
@@ -158,13 +119,13 @@ export default function EventTable() {
                 return (
                   <React.Fragment key={index}>
                     <TableRow role="checkbox" tabIndex={-1}>
-                      <TableCell component="th" id={labelId} scope="row" padding="none" align="center">
+                      <TableCell component="th" id={labelId} scope="row" padding="none" align="left">
                         {row.id}
                       </TableCell>
-                      <TableCell align="center">{row.title}</TableCell>
-                      <TableCell align="center">{row.user.email}</TableCell>
-                      <TableCell align="center">{row.eventHappeningDate}</TableCell>
-                      <TableCell align="center" sx={{ minWidth: '200px' }}>
+                      <TableCell align="left">{row.title}</TableCell>
+                      <TableCell align="left">{row.createdBy.email}</TableCell>
+                      <TableCell align="left">{row.isMobStatus ? 'true' : 'false'}</TableCell>
+                      <TableCell align="left" sx={{ minWidth: '200px' }}>
                         <IconButton
                           onClick={() => {
                             profileModalOpen();
@@ -202,7 +163,7 @@ export default function EventTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </MainCard>
-      <ViewEvent modalOpen={profileOpen} modalClose={profileModalClose} userDetails={user} />
+      <ViewService modalOpen={profileOpen} modalClose={profileModalClose} userDetails={user} />
     </>
   );
 }
@@ -218,7 +179,7 @@ const headCells = [
     id: 'title',
     numeric: false,
     disablePadding: false,
-    label: 'Community Group'
+    label: 'Title'
   },
   {
     id: 'email',
@@ -227,10 +188,10 @@ const headCells = [
     label: 'Posted By'
   },
   {
-    id: 'eventHappeningDate',
+    id: 'isMobStatus',
     numeric: false,
     disablePadding: false,
-    label: 'Event Posted'
+    label: 'Status'
   },
   {
     id: 'action',
@@ -239,11 +200,3 @@ const headCells = [
     label: 'Action'
   }
 ];
-EnhancedTableHead.propTypes = {
-  onSelectAllClick: PropTypes.any,
-  order: PropTypes.any,
-  orderBy: PropTypes.any,
-  numSelected: PropTypes.any,
-  rowCount: PropTypes.any,
-  onRequestSort: PropTypes.any
-};

@@ -29,7 +29,7 @@ import UploadSingleFile from 'components/third-party/dropzone/SingleFile';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getCommunity } from 'redux/communityRelated/communityHandle';
-import { getEducation, educationCreate } from 'redux/education/educationHandle';
+import { getEducation, educationCreate, educationUpdate } from 'redux/education/educationHandle';
 // project import
 // import ProfileTab from './ProfileTab';
 import Avatar from 'components/@extended/Avatar';
@@ -40,7 +40,7 @@ import { ThemeMode } from 'config';
 import CameraOutlined from '@ant-design/icons/CameraOutlined';
 import userImage from 'assets/images/users/avatar-1.png';
 
-const AddNewEducation = ({ modalOpen, modalClose }) => {
+const ViewEducation = ({ modalOpen, modalClose, userDetails }) => {
   const dispatch = useDispatch();
   const { communityList } = useSelector((state) => state.community);
   useEffect(() => {
@@ -60,9 +60,14 @@ const AddNewEducation = ({ modalOpen, modalClose }) => {
   const [group, setGroup] = useState(1);
   const [body, setBody] = useState('');
   const [document, setDocument] = useState('https://localhost.com');
-  const [link, setlink] = useState('Lahore');
+  const [link, setlink] = useState('');
   const [user, setUser] = useState('594aad28-d5a2-408b-82d3-35641e2db6b5');
   const [type, setType] = useState(1);
+  useEffect(() => {
+    setTitle(userDetails?.title || '');
+    setTitle(userDetails?.link || '');
+    setCommunity(userDetails?.community || '');
+  }, [userDetails]);
   const Save = () => {
     const data = {
       title: title,
@@ -75,8 +80,7 @@ const AddNewEducation = ({ modalOpen, modalClose }) => {
       group,
       user
     };
-    modalClose(true);
-    dispatch(educationCreate(data));
+    dispatch(educationUpdate(id, data));
     dispatch(getEducation());
     // Swal.fire({
     //   zIndex: 99999,
@@ -288,8 +292,9 @@ const AddNewEducation = ({ modalOpen, modalClose }) => {
     </>
   );
 };
-AddNewEducation.propTypes = {
+ViewEducation.propTypes = {
   modalOpen: PropTypes.bool,
-  modalClose: PropTypes.func
+  modalClose: PropTypes.func,
+  userDetails: PropTypes.array
 };
-export default AddNewEducation;
+export default ViewEducation;

@@ -35,9 +35,8 @@ import { ThemeMode } from 'config';
 
 import CameraOutlined from '@ant-design/icons/CameraOutlined';
 import userImage from 'assets/images/users/avatar-1.png';
-import { userDetail } from 'redux/userRelated/userHandle';
 
-const AddNewEvent = ({ modalOpen, modalClose }) => {
+const ViewEvent = ({ modalOpen, modalClose, userDetails }) => {
   const dispatch = useDispatch();
   const { communityList } = useSelector((state) => state.community);
   const { tablePage, items_per_page } = useSelector((state) => state.event);
@@ -97,12 +96,12 @@ const AddNewEvent = ({ modalOpen, modalClose }) => {
       // });
     }
   };
+  useEffect(() => {
+    setTitle(userDetails?.title || '');
+  }, [userDetails]);
   const Cancel = () => {
     modalClose(true);
   };
-  useEffect(() => {
-    console.log(userKeycloakId);
-  }, [userKeycloakId]);
   const handleChangeCommunity = (event) => {
     event.preventDefault();
     setCommunity(event.target.value);
@@ -248,7 +247,7 @@ const AddNewEvent = ({ modalOpen, modalClose }) => {
                     Cancel
                   </Button>
                   <Button variant="contained" onClick={Save}>
-                    Save
+                    Update
                   </Button>
                 </Stack>
               </Grid>
@@ -259,9 +258,9 @@ const AddNewEvent = ({ modalOpen, modalClose }) => {
     </>
   );
 };
-AddNewEvent.propTypes = {
+ViewEvent.propTypes = {
   modalOpen: PropTypes.bool,
-  id: number,
-  modalClose: PropTypes.func
+  modalClose: PropTypes.func,
+  userDetails: PropTypes.object
 };
-export default AddNewEvent;
+export default ViewEvent;

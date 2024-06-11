@@ -1,21 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  eventList: [],
-  eventDetails: {},
+  educationList: [],
+  educationDetailes: [],
+  loading: false,
+  error: null,
+  response: null,
   total_count: 0,
   has_more: false,
   tablePage: 1,
-  items_per_page: 10,
-  // subjectDetails: [],
-  loading: false,
-  error: 'This is error',
-  response: null,
+  items_per_page: 5,
   getresponse: null
 };
 
-const eventSlice = createSlice({
-  name: 'event',
+const educationSlice = createSlice({
+  name: 'education',
   initialState,
   reducers: {
     getPaginationState: (state, action) => {
@@ -27,36 +26,36 @@ const eventSlice = createSlice({
     getRequest: (state) => {
       state.loading = true;
     },
-    getError: (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
-    },
     getSuccess: (state) => {
       state.loading = false;
     },
-    getEventSuccess: (state, action) => {
-      state.eventList = action.payload;
+    getEducationSuccess: (state, action) => {
+      state.educationList = action.payload;
       state.loading = false;
       state.error = false;
       state.getresponse = null;
     },
-    getEventDetailSuccess: (state, action) => {
-      state.eventDetails = action.payload;
+    getEducationDetailedSuccess: (state, action) => {
+      state.educationDetailes = action.payload;
       state.loading = false;
+      state.error = false;
+      state.getresponse = null;
+    },
+    getError: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
     }
   }
 });
 
 export const {
   getRequest,
-  getActivateSuccess,
-  getEventSuccess,
-  getMemberDetails,
-  getPaginationState,
-  getFailedTwo,
-  getError,
   getSuccess,
-  getEventDetailSuccess
-} = eventSlice.actions;
+  getPaginationState,
+  getEducationSuccess,
+  getEducationDetailedSuccess,
+  getEducationDetailedFailed,
+  getError
+} = educationSlice.actions;
 
-export const eventReducer = eventSlice.reducer;
+export const educationReducer = educationSlice.reducer;

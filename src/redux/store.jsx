@@ -11,6 +11,9 @@ import { placesReducer } from './placesRelated/placesSlice';
 import { surveyReducer } from './surveyRelated/surveySlice';
 import { eventReducer } from './eventRelated/eventSlice';
 import { jobReducer } from './jobRelated/jobsSlice';
+import { educationReducer } from './education/educationSlice';
+import { serviceReducer } from './serviceRelated/serviceSlice';
+import { categoryReducer } from './categoryRelated/categorySlice';
 const store = configureStore({
   reducer: {
     community: communityReducer,
@@ -22,9 +25,12 @@ const store = configureStore({
     resource: resourceReducer,
     status: statusReducer,
     groupMember: groupMemberReducer,
-    surveys: surveyReducer,
+    survey: surveyReducer,
     event: eventReducer,
-    job: jobReducer
+    job: jobReducer,
+    education: educationReducer,
+    service: serviceReducer,
+    category: categoryReducer
   }
 });
 

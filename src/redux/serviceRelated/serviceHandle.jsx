@@ -1,6 +1,14 @@
 import useAxios from 'utils/useAxios';
 import Swal from 'sweetalert2';
-import { getRequest, getSuccess, getEventSuccess, getPaginationState, getFailedTwo, getEventDetailSuccess, getError } from './eventSlice';
+import {
+  getRequest,
+  getServiceSuccess,
+  getPaginationState,
+  getFailedTwo,
+  getError,
+  getSuccess,
+  getServiceDetailSuccess
+} from './serviceSlice';
 const Toast = Swal.mixin({
   toast: true,
   position: 'center',
@@ -9,12 +17,12 @@ const Toast = Swal.mixin({
   timerProgressBar: true
 });
 
-export const eventCreate = (data) => async (dispatch) => {
+export const serviceCreate = (data) => async (dispatch) => {
   console.log(data);
   dispatch(getRequest());
   const axiosInstance = useAxios();
   try {
-    const result = await axiosInstance.post('/admin/events/', data);
+    const result = await axiosInstance.post('/admin/services/', data);
     if (result.data) {
       dispatch(getSuccess());
       Toast.fire({
@@ -34,11 +42,11 @@ export const eventCreate = (data) => async (dispatch) => {
     });
   }
 };
-export const getAllEvent = (rowsPerPage, newPage) => async (dispatch) => {
+export const getService = (rowsPerPage, newPage) => async (dispatch) => {
   const axiosInstance = useAxios();
   dispatch(getRequest());
   try {
-    const result = await axiosInstance.get('/admin/events/', {
+    const result = await axiosInstance.get('admin/services/', {
       params: {
         page: newPage,
         items_per_page: rowsPerPage
@@ -47,26 +55,26 @@ export const getAllEvent = (rowsPerPage, newPage) => async (dispatch) => {
     if (result.data.data.message) {
       dispatch(getFailedTwo(result.data.data.message));
     } else {
-      dispatch(getEventSuccess(result.data.data));
+      dispatch(getServiceSuccess(result.data.data));
       dispatch(getPaginationState(result.data));
     }
   } catch (error) {
     // dispatch(getError(error.data));
   }
 };
-export const getEventById = (id) => async (dispatch) => {
+export const getServiceById = (id) => async (dispatch) => {
   const axiosInstance = useAxios();
   try {
     const result = await axiosInstance.get(`/admin/events/${id}/`);
     if (result.data) {
-      dispatch(getEventDetailSuccess(result.data.data));
+      dispatch(getServiceDetailSuccess(result.data.data));
     }
   } catch (error) {
     // dispatch(getError(error.data));
     console.log(error);
   }
 };
-export const getEventByUserId = (id) => async (dispatch) => {
+export const getServiceByUserId = (id) => async (dispatch) => {
   dispatch(getRequest());
   const axiosInstance = useAxios();
   try {
@@ -76,13 +84,13 @@ export const getEventByUserId = (id) => async (dispatch) => {
       }
     });
     if (result.data) {
-      dispatch(getEventDetailSuccess(result.data.data));
+      dispatch(getServiceDetailSuccess(result.data.data));
     }
   } catch (error) {
     dispatch(getError(error.data));
   }
 };
-export const getEventByCommunityId = (id) => async (dispatch) => {
+export const getServiceByCommunityId = (id) => async (dispatch) => {
   dispatch(getRequest());
   const axiosInstance = useAxios();
   try {
@@ -98,23 +106,12 @@ export const getEventByCommunityId = (id) => async (dispatch) => {
     dispatch(getError(error.data));
   }
 };
-export const eventUpdate =
-  ({ userKeycloakId, title, description, eventExpiryDate, eventHappeningDate, imageUrl, eventUrl, color, location, user, community }) =>
+export const serviceUpdate =
+  ({ data }) =>
   async () => {
     const axiosInstance = useAxios();
     try {
-      const result = await axiosInstance.patch(`/admin/events/${userKeycloakId}/`, {
-        title,
-        description,
-        eventExpiryDate,
-        eventHappeningDate,
-        imageUrl,
-        eventUrl,
-        color,
-        location,
-        user,
-        community
-      });
+      const result = await axiosInstance.patch(`/admin/events/${userKeycloakId}/`, data);
       if (result) {
         Toast.fire({
           icon: 'success',
@@ -132,7 +129,7 @@ export const eventUpdate =
       });
     }
   };
-export const eventDelete = (id) => async () => {
+export const serviceDelete = (id) => async () => {
   const axiosInstance = useAxios();
   try {
     const result = await axiosInstance.delete(`/admin/events/${id}/`);

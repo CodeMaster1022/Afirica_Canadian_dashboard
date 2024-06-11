@@ -3,7 +3,7 @@
 import { Modal, useMediaQuery } from '@mui/material';
 import PropTypes, { number } from 'prop-types';
 import { useEffect, useState } from 'react';
-// import Swal from 'sweetalert2';
+import Swal from 'sweetalert2';
 // material-ui
 import MUIRichTextEditor from 'mui-rte';
 import { convertToRaw } from 'draft-js';
@@ -14,22 +14,17 @@ import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
-import { Formik } from 'formik';
-import * as yup from 'yup';
-import FormHelperText from '@mui/material/FormHelperText';
 import Stack from '@mui/material/Stack';
-import MainCard from 'components/MainCard';
 import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import UploadSingleFile from 'components/third-party/dropzone/SingleFile';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getCommunity } from 'redux/communityRelated/communityHandle';
-import { getEducation, educationCreate } from 'redux/education/educationHandle';
+import { getAlljobs, jobsCreate, jobsUpdate } from 'redux/jobRelated/jobHandle';
 // project import
 // import ProfileTab from './ProfileTab';
 import Avatar from 'components/@extended/Avatar';
@@ -40,9 +35,10 @@ import { ThemeMode } from 'config';
 import CameraOutlined from '@ant-design/icons/CameraOutlined';
 import userImage from 'assets/images/users/avatar-1.png';
 
-const AddNewEducation = ({ modalOpen, modalClose }) => {
+const ViewJob = ({ modalOpen, modalClose }) => {
   const dispatch = useDispatch();
   const { communityList } = useSelector((state) => state.community);
+  const { jobsList } = useSelector((state) => state.job);
   useEffect(() => {
     dispatch(getCommunity());
   }, [dispatch]);
@@ -50,49 +46,52 @@ const AddNewEducation = ({ modalOpen, modalClose }) => {
   const [name, setName] = useState('');
   const [imageUrl, setSelectedImage] = useState('');
   const [avatar, setAvatar] = useState(userImage);
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState();
   const [application, setApplication] = useState('');
   const [level, setLevel] = useState(1);
   const [start_date, setStartDate] = useState('2024-06-30 01:00:00');
   const [end_date, setEndDate] = useState();
   const [community, setCommunity] = useState('');
-  const [video, setVideo] = useState('http://localhost:3000/events');
-  const [group, setGroup] = useState(1);
-  const [body, setBody] = useState('');
-  const [document, setDocument] = useState('https://localhost.com');
-  const [link, setlink] = useState('Lahore');
+  const [external_url, setExternalUrl] = useState('http://localhost:3000/events');
+  const [tags, setTags] = useState('Hello');
+  const [description, setDescription] = useState('');
+  const [color, setColor] = useState('ffffff');
+  const [location, setLocation] = useState('Lahore');
   const [user, setUser] = useState('594aad28-d5a2-408b-82d3-35641e2db6b5');
-  const [type, setType] = useState(1);
+  const [type, setType] = useState('Hello');
   const Save = () => {
-    const data = {
-      title: title,
-      body: body,
-      video,
-      image: 'https://localhost.com',
-      community: community,
-      document,
-      link,
-      group,
-      user
-    };
-    modalClose(true);
-    dispatch(educationCreate(data));
-    dispatch(getEducation());
-    // Swal.fire({
-    //   zIndex: 99999,
-    //   title: `Do you want to save?`,
-    //   showDenyButton: true,
-    //   showCancelButton: false,
-    //   confirmButtonText: 'Yes',
-    //   denyButtonText: `No`
-    // }).then((result) => {
-    //   /* Read more about isConfirmed, isDenied below */
-    //   if (result.isConfirmed) {
-    //     console.log('yes');
-    //   } else if (result.isDenied) {
-    //     Swal.fire(`${action} was cancelled`, '', 'info');
-    //   }
-    // });
+    if (imageUrl !== '' && title !== '' && description !== '' && community !== '') {
+      if (action === 'create') dispatch(jobsCreate({ title, description, external_url, user, community, start_date, end_date }));
+      if (action === 'edit')
+        dispatch(
+          jobsUpdate({
+            title,
+            description,
+            external_url,
+            user,
+            community,
+            start_date,
+            end_date
+          })
+        );
+      dispatch(getAlljobs());
+      modalClose(true);
+      // Swal.fire({
+      //   zIndex: 99999,
+      //   title: `Do you want to save?`,
+      //   showDenyButton: true,
+      //   showCancelButton: false,
+      //   confirmButtonText: 'Yes',
+      //   denyButtonText: `No`
+      // }).then((result) => {
+      //   /* Read more about isConfirmed, isDenied below */
+      //   if (result.isConfirmed) {
+      //     console.log('yes');
+      //   } else if (result.isDenied) {
+      //     Swal.fire(`${action} was cancelled`, '', 'info');
+      //   }
+      // });
+    }
   };
   const Cancel = () => {
     modalClose(true);
@@ -185,8 +184,60 @@ const AddNewEducation = ({ modalOpen, modalClose }) => {
               </Box>
             </Grid>
             <Grid item xs={12}>
+              <Typography sx={{ color: '#8C8C8C' }}>Company Name</Typography>
+              <TextField sx={{ width: '100%' }} value={name} required onChange={(e) => setName(e.target.value)} />
+            </Grid>
+            <Grid item xs={12}>
               <Typography sx={{ color: '#8C8C8C' }}>Title</Typography>
               <TextField sx={{ width: '100%' }} value={title} required onChange={(e) => setTitle(e.target.value)} />
+            </Grid>
+            <Grid item xs={6}>
+              <Typography sx={{ color: '#8C8C8C' }}>Job Type</Typography>
+              {/* <TextField sx={{ width: '100%' }} value={type} required onChange={(e) => setJobType(e.target.value)} /> */}
+              <FormControl sx={{ width: '100%' }}>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={type}
+                  onChange={handleChangeJobType}
+                  placeholder="job type"
+                >
+                  <MenuItem value={0}>Full time</MenuItem>
+                  <MenuItem value={1}>Part time </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography sx={{ color: '#8C8C8C' }}>Experience Level</Typography>
+              <FormControl sx={{ width: '100%' }}>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={level}
+                  onChange={handleChangeLevel}
+                  placeholder="community"
+                >
+                  <MenuItem value={0}>Beginner</MenuItem>
+                  <MenuItem value={1}>Intermediate </MenuItem>
+                  <MenuItem value={2}>Professional </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography sx={{ color: '#8C8C8C' }}>Location</Typography>
+              <TextField sx={{ width: '100%' }} value={location} required onChange={(e) => setLocation(e.target.value)} />
+            </Grid>
+            <Grid item xs={6}>
+              <Typography sx={{ color: '#8C8C8C' }}>End Date</Typography>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  format="YYYY-MM-DD"
+                  value={end_date}
+                  // defaultValue={dayjs(surveyInfo?.endDate)}
+                  sx={{ width: '100%' }}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </LocalizationProvider>
             </Grid>
             <Grid item xs={6}>
               <Typography sx={{ color: '#8C8C8C' }}>Target Community</Typography>
@@ -206,56 +257,9 @@ const AddNewEducation = ({ modalOpen, modalClose }) => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={6}>
-              <Typography sx={{ color: '#8C8C8C' }}>Category</Typography>
-              {/* <TextField sx={{ width: '100%' }} value={type} required onChange={(e) => setJobType(e.target.value)} /> */}
-              <FormControl sx={{ width: '100%' }}>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={type}
-                  onChange={handleChangeJobType}
-                  placeholder="job type"
-                >
-                  <MenuItem value={0}>Category One</MenuItem>
-                  <MenuItem value={1}>Category Two </MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
             <Grid item xs={12}>
-              <Typography sx={{ color: '#8C8C8C' }}>External Link</Typography>
-              <TextField sx={{ width: '100%' }} value={link} required onChange={(e) => setlink(e.target.value)} />
-            </Grid>
-            <Grid item xs={12}>
-              <MainCard sx={{ mt: '20px' }}>
-                <Formik
-                  initialValues={{ files: null }}
-                  onSubmit={(values) => {
-                    // submit form
-                    console.log('dropzone upload - ', values);
-                  }}
-                  validationSchema={yup.object().shape({
-                    files: yup.mixed().required('Avatar is a required.')
-                  })}
-                >
-                  {({ values, handleSubmit, setFieldValue, touched, errors }) => (
-                    <form onSubmit={handleSubmit}>
-                      <Grid container spacing={3}>
-                        <Grid item xs={12}>
-                          <Stack spacing={1.5} alignItems="center">
-                            <UploadSingleFile setFieldValue={setFieldValue} file={values.files} error={touched.files && !!errors.files} />
-                            {touched.files && errors.files && (
-                              <FormHelperText error id="standard-weight-helper-text-password-login">
-                                {errors.files}
-                              </FormHelperText>
-                            )}
-                          </Stack>
-                        </Grid>
-                      </Grid>
-                    </form>
-                  )}
-                </Formik>
-              </MainCard>
+              <Typography sx={{ color: '#8C8C8C' }}>Application Link</Typography>
+              <TextField sx={{ width: '100%' }} value={application} required onChange={(e) => setApplication(e.target.value)} />
             </Grid>
             <Grid item xs={12}>
               <Typography sx={{ color: '#8C8C8C' }}>Job Description</Typography>
@@ -266,7 +270,7 @@ const AddNewEducation = ({ modalOpen, modalClose }) => {
                   required
                   onChange={(value) => {
                     const content = JSON.stringify(convertToRaw(value.getCurrentContent()));
-                    setBody(content);
+                    setDescription(content);
                   }}
                 />
               </Box>
@@ -288,8 +292,9 @@ const AddNewEducation = ({ modalOpen, modalClose }) => {
     </>
   );
 };
-AddNewEducation.propTypes = {
+ViewJob.propTypes = {
   modalOpen: PropTypes.bool,
+  id: number,
   modalClose: PropTypes.func
 };
-export default AddNewEducation;
+export default AddNewJob;

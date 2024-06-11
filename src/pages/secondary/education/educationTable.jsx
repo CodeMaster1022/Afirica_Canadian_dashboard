@@ -1,29 +1,19 @@
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import EnhancedTableHead from 'utils/enhanceFunction';
 import Swal from 'sweetalert2';
 // material-ui
-import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import { Typography } from '@mui/material';
+import { Table, Divider, TableBody, TableCell, TableContainer, TableRow, TablePagination } from '@mui/material';
+
 import IconButton from 'components/@extended/IconButton';
-import formatDate from 'utils/dateForm';
-import { resourceApprove, resourceReject } from 'redux/resourceRelated/resourceHandle';
-import { placesApprove, placesReject } from 'redux/placesRelated/placesHandle';
 // assets
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 // Redux
-import { useDispatch } from 'react-redux';
-
-import { CloseOutlined, CheckOutlined } from '@ant-design/icons';
-import EnhancedTableHead from '../../../utils/enhanceFunction';
+import { useSelector, useDispatch } from 'react-redux';
+// import { eventDelete, getAllEvent, getEventById } from 'redux/eventRelated/eventHandle';
+import { educationDelete, getEducation } from 'redux/education/educationHandle';
+// project imports
 import MainCard from 'components/MainCard';
-// import { CSVExport, RowSelection } from 'components/third-party/react-table';
-
+import ViewEducation from './modal/ViewEducation';
 // table filter
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -48,58 +38,47 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-// table header
-const headCells = [
-  {
-    id: 'id',
-    numeric: true,
-    disablePadding: true,
-    label: 'ID'
-  },
-  {
-    id: 'title',
-    numeric: false,
-    disablePadding: false,
-    label: 'Title'
-  },
-  {
-    id: 'eamil',
-    numeric: false,
-    disablePadding: false,
-    label: 'Posted By'
-  },
-  {
-    id: 'createdAt',
-    numeric: false,
-    disablePadding: false,
-    label: 'Date Posted'
-  },
-  {
-    id: 'status',
-    numeric: false,
-    disablePadding: false,
-    label: 'Status'
-  },
-
-  {
-    id: 'actions',
-    numeric: false,
-    disablePadding: false,
-    label: 'Actions'
-  }
-];
-
 // ==============================|| MUI TABLE - HEADER ||============================== //
 
 // ==============================|| TABLE - DATA TABLE ||============================== //
 
-export default function EducationTable({ rows, source }) {
+export default function EventTable() {
   const dispatch = useDispatch();
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('calories');
-  const [page, setPage] = useState(0);
-  const [dense] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const { educationList, total_count, tablePage, items_per_page } = useSelector((state) => state.education);
+  // Fetch Data
+  const [user, setUser] = useState({});
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('calories');
+  const [page, setPage] = React.useState(0);
+  const [dense] = React.useState(false);
+  const [rowsPerPage, setRowsPerPage] = React.useState(items_per_page);
+  let data = stableSort(educationList, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  // const [user, setUser] = useState({});
+  // const handleButtonClick = (row) => {
+  //   profileModalOpen();
+  //   setUser(row);
+  // };
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileModalOpen = () => setProfileOpen(true);
+  const profileModalClose = () => setProfileOpen(false);
+  const handleAction = (id) => {
+    Swal.fire({
+      title: `Do you want to delete education ${id}?`,
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: 'Yes',
+      denyButtonText: `No`
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        dispatch(educationDelete(id));
+        dispatch(getEducation(items_per_page, tablePage));
+      } else if (result.isDenied) {
+        Swal.fire(`${action} was cancelled`, '', 'info');
+      }
+    });
+  };
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -107,135 +86,63 @@ export default function EducationTable({ rows, source }) {
   };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-  };
-  const handleAction = (id, action, source) => {
-    Swal.fire({
-      title: `Do you want to ${action} this user?`,
-      showDenyButton: true,
-      showCancelButton: false,
-      confirmButtonText: 'Yes',
-      denyButtonText: `No`
-    }).then((result) => {
-      if (result.isConfirmed) {
-        if (source === 'resource') {
-          if (action === 'approve') dispatch(resourceApprove(id));
-          else if (action === 'reject') dispatch(resourceReject(id));
-        }
-        if (source === 'status') {
-          if (action === 'approve') dispatch(statusApprove(id));
-          else if (action === 'reject') dispatch(statusReject(id));
-        }
-        if (source === 'places') {
-          if (action === 'approve') dispatch(placesApprove(id));
-          else if (action === 'reject') dispatch(placesReject(id));
-        }
-      } else if (result.isDenied) {
-        Swal.fire(`${action} was cancelled`, '', 'info');
-      }
-    });
-  };
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event?.target.value, 10));
-    setPage(0);
+    dispatch(getEducation(rowsPerPage, newPage + 1));
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  const handleChangeRowsPerPage = (event) => {
+    console.log('new page');
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+    dispatch(getEducation(parseInt(event.target.value, 10), 1));
+  };
+
+  // avoid a layout jump when reaching the last page with empty rows.
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - total_count) : 0;
 
   return (
     <>
-      <MainCard content={false} title="Educational Materials">
+      <MainCard content={false} title="Community Group">
+        {/* table */}
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
             <EnhancedTableHead
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={total_count}
               headCells={headCells}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  if (typeof row === 'number') return null;
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  return (
-                    <TableRow key={index} hover role="checkbox" tabIndex={-1}>
-                      <TableCell component="th" id={labelId} scope="row" padding="none" align="left" sx={{ width: '10px' }}>
+              {data.map((row, index) => {
+                /** make sure no display bugs if row isn't an OrderData object */
+                if (typeof row === 'number') return null;
+                const labelId = `enhanced-table-checkbox-${index}`;
+                return (
+                  <React.Fragment key={index}>
+                    <TableRow role="checkbox" tabIndex={-1}>
+                      <TableCell component="th" id={labelId} scope="row" padding="none" align="center">
                         {row.id}
                       </TableCell>
-                      <TableCell align="left">{source === 'resource' ? row.title : row.name}</TableCell>
-                      <TableCell align="left" sx={{ maxWidth: '180px' }}>
-                        {row.user.email}
+                      <TableCell align="center">{row.title}</TableCell>
+                      <TableCell align="center">{row.user.email}</TableCell>
+                      <TableCell align="center">{row.eventHappeningDate}</TableCell>
+                      <TableCell align="center" sx={{ minWidth: '200px' }}>
+                        <IconButton
+                          onClick={() => {
+                            profileModalOpen();
+                            setUser(row);
+                          }}
+                        >
+                          <EditOutlined />
+                        </IconButton>
+                        <IconButton sx={{ color: '#FF4D4F' }} onClick={() => handleAction(row.id)}>
+                          <DeleteOutlined />
+                        </IconButton>
                       </TableCell>
-                      <TableCell align="left">{formatDate(row.createdAt)}</TableCell>
-                      <TableCell align="left" sx={{ maxWidth: '130px' }}>
-                        {row.isActive === true && (
-                          <>
-                            <Box sx={{ display: 'flex' }}>
-                              <Typography
-                                fontSize={12}
-                                sx={{ color: '#52C41A', borderRadius: '5px', backgroundColor: '#F6FFED', padding: '5px' }}
-                              >
-                                Published
-                              </Typography>
-                            </Box>
-                          </>
-                        )}
-                        {row.isPending === true && (
-                          <>
-                            <Box sx={{ display: 'flex' }}>
-                              <Typography
-                                fontSize={12}
-                                sx={{ color: '#1890FF', borderRadius: '5px', backgroundColor: '#E6F7FF', padding: '5px' }}
-                              >
-                                Pending Review
-                              </Typography>
-                            </Box>
-                          </>
-                        )}
-                        {row.isDeleted === true && (
-                          <>
-                            <Box sx={{ display: 'flex' }}>
-                              <Typography
-                                fontSize={12}
-                                sx={{ color: '#FF4D4F', borderRadius: '5px', backgroundColor: '#FFF1F0', padding: '5px' }}
-                              >
-                                Deleted
-                              </Typography>
-                            </Box>
-                          </>
-                        )}
-                      </TableCell>
-                      {row.isDeleted === true && (
-                        <TableCell align="left" sx={{ maxWidth: '100px' }}>
-                          <IconButton disabled>
-                            <CloseOutlined />
-                          </IconButton>
-                          <IconButton sx={{ color: '#FF4D4F' }} disabled>
-                            <CheckOutlined />
-                          </IconButton>
-                        </TableCell>
-                      )}
-                      {row.isDeleted === false && (
-                        <TableCell align="left" sx={{ maxWidth: '100px' }}>
-                          <IconButton onClick={() => handleAction(row.id, 'reject', source)}>
-                            <CloseOutlined />
-                          </IconButton>
-                          {row.isActive ? (
-                            <IconButton sx={{ color: '#FF4D4F' }} disabled>
-                              <CheckOutlined />
-                            </IconButton>
-                          ) : (
-                            <IconButton sx={{ color: '#FF4D4F' }} onClick={() => handleAction(row.id, 'approve', source)}>
-                              <CheckOutlined />
-                            </IconButton>
-                          )}
-                        </TableCell>
-                      )}
                     </TableRow>
-                  );
-                })}
+                  </React.Fragment>
+                );
+              })}
               {emptyRows > 0 && (
                 <TableRow sx={{ height: (dense ? 33 : 53) * emptyRows }}>
                   <TableCell colSpan={6} />
@@ -248,19 +155,49 @@ export default function EducationTable({ rows, source }) {
 
         {/* table data */}
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[10, 15, 25]}
           component="div"
-          count={rows.length}
+          count={total_count}
           rowsPerPage={rowsPerPage}
-          page={page}
+          page={tablePage - 1}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </MainCard>
+      <ViewEducation modalOpen={profileOpen} modalClose={profileModalClose} userDetails={user} />
     </>
   );
 }
-EducationTable.propTypes = {
-  rows: PropTypes.array.isRequired,
-  source: PropTypes.string.isRequired
-};
+// table header
+const headCells = [
+  {
+    id: 'id',
+    numeric: true,
+    disablePadding: true,
+    label: 'ID'
+  },
+  {
+    id: 'title',
+    numeric: false,
+    disablePadding: false,
+    label: 'Community Group'
+  },
+  {
+    id: 'email',
+    numeric: false,
+    disablePadding: false,
+    label: 'Posted By'
+  },
+  {
+    id: 'eventHappeningDate',
+    numeric: false,
+    disablePadding: false,
+    label: 'Event Posted'
+  },
+  {
+    id: 'action',
+    numeric: false,
+    disablePadding: false,
+    label: 'Action'
+  }
+];

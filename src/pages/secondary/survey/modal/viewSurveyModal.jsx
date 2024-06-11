@@ -1,6 +1,7 @@
 import { Modal, useMediaQuery } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 // import Swal from 'sweetalert2';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -18,18 +19,20 @@ import IconButton from 'components/@extended/IconButton';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import MoreOutlined from '@ant-design/icons/MoreOutlined';
 import userImage from 'assets/images/users/avatar-1.png';
-import useAxios from 'utils/useAxios';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import { format } from 'date-fns';
 
+import { surveyDelete, getSurvey, surveyUpdate } from 'redux/surveyRelated/surveyHandle';
 const ViewSurveyModal = ({ modalOpen, modalClose, surveyInfo }) => {
-  const axiosInstance = useAxios();
   const theme = useTheme();
   const isSMScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const { communityList } = useSelector((state) => state.community);
+  const { tablePage, items_per_page } = useSelector((state) => state.survey);
+  const dispatch = useDispatch();
   const [selectedImage, setSelectedImage] = useState(undefined);
   // const [changes, setChanges] = useState({});
   const [data, setData] = useState({
@@ -45,25 +48,16 @@ const ViewSurveyModal = ({ modalOpen, modalClose, surveyInfo }) => {
   const [edit, setEdit] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [community, setCommunity] = useState(surveyInfo?.community.id);
-  const [communityList, setCommunityList] = useState([]);
   const open = Boolean(anchorEl);
 
   const handleChangeCommunity = (event) => {
     setCommunity(event.target.value);
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosInstance.get('/communities/');
-        setCommunityList(response.data.data);
-      } catch (error) {
-        console.log(error.response.data);
-      }
-    };
-    fetchData();
-  }, []);
-
+  const handleDelete = async (id) => {
+    modalClose();
+    dispatch(surveyDelete(id));
+    dispatch(getSurvey(items_per_page, tablePage));
+  };
   useEffect(() => {
     if (selectedImage) {
       setAvatar(URL.createObjectURL(selectedImage));
@@ -116,27 +110,19 @@ const ViewSurveyModal = ({ modalOpen, modalClose, surveyInfo }) => {
     }
 
     console.log(nonEmptyData);
+    const updateAndFetchSurvey = async (surveyInfo, nonEmptyData, items_per_page, tablePage) => {
+      try {
+        await dispatch(surveyUpdate(surveyInfo.id, nonEmptyData));
+        await dispatch(getSurvey(items_per_page, tablePage));
+      } catch (error) {
+        console.error('Error updating and fetching survey:', error);
+      }
+    };
 
-    try {
-      const response = await axiosInstance.patch(`/surveys/${surveyInfo.id}/`, nonEmptyData);
-      console.log(response.data);
-      setEdit(false);
-      modalClose();
-    } catch (error) {
-      console.log(error.response.data);
-    }
+    updateAndFetchSurvey(surveyInfo, nonEmptyData, items_per_page, tablePage);
 
     setEdit(false);
     modalClose();
-  };
-
-  const handleSurveyDelete = async (id) => {
-    try {
-      // const response = await axiosInstance.delete(`/surveys/${id}/`);
-      modalClose();
-    } catch (error) {
-      console.log(error.response.data);
-    }
   };
 
   const handleClick = (event) => {
@@ -319,7 +305,7 @@ const ViewSurveyModal = ({ modalOpen, modalClose, surveyInfo }) => {
                   transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                 >
                   <MenuItem onClick={() => setEdit(true)}>Edit</MenuItem>
-                  <MenuItem onClick={() => handleSurveyDelete(surveyInfo?.id)}>Delete</MenuItem>
+                  <MenuItem onClick={() => handleDelete(id)}>Delete</MenuItem>
                 </Menu>
               </Stack>
             ) : (
@@ -330,7 +316,7 @@ const ViewSurveyModal = ({ modalOpen, modalClose, surveyInfo }) => {
                       <EditOutlined />
                       Edit
                     </Button>
-                    <Button variant="outlined" color="info" onClick={() => handleSurveyDelete(surveyInfo?.id)}>
+                    <Button variant="outlined" color="info" onClick={() => handleDelete(surveyInfo?.id)}>
                       <DeleteOutlined />
                       Delete
                     </Button>
@@ -360,7 +346,7 @@ const ViewSurveyModal = ({ modalOpen, modalClose, surveyInfo }) => {
 ViewSurveyModal.propTypes = {
   modalOpen: PropTypes.bool.isRequired,
   modalClose: PropTypes.func.isRequired,
-  surveyInfo: PropTypes.object.isRequired
+  surveyInfo: PropTypes.object
 };
 
 export default ViewSurveyModal;

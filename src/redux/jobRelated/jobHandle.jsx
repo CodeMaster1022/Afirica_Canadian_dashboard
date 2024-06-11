@@ -1,6 +1,6 @@
 import useAxios from 'utils/useAxios';
 import Swal from 'sweetalert2';
-import { getRequest, getjobsSuccess, getPaginationState, getFailedTwo, getError, getjobsDetailSuccess } from './jobsSlice';
+import { getRequest, getjobsSuccess, getPaginationState, getError, getjobsDetailSuccess } from './jobsSlice';
 const Toast = Swal.mixin({
   toast: true,
   position: 'center',
@@ -9,31 +9,30 @@ const Toast = Swal.mixin({
   timerProgressBar: true
 });
 
-export const jobsCreate =
-  ({ input }) =>
-  async () => {
-    const axiosInstance = useAxios();
-    try {
-      const result = await axiosInstance.post('/admin/jobs/create/', input);
-      console.log(result.data.message);
-      if (result) {
-        Toast.fire({
-          icon: 'success',
-          position: 'center',
-          text: `${result.data.message}`,
-          title: 'Success!'
-        });
-      }
-    } catch (error) {
-      console.log(error);
+export const jobsCreate = (input) => async () => {
+  console.log(input.data);
+  const axiosInstance = useAxios();
+  try {
+    const result = await axiosInstance.post('/admin/jobs/create/', input.data);
+    console.log(result.data.message);
+    if (result) {
       Toast.fire({
-        icon: 'error',
+        icon: 'success',
         position: 'center',
-        text: `${error.message}`,
-        title: 'Error!'
+        text: `${result.data.message}`,
+        title: 'Success!'
       });
     }
-  };
+  } catch (error) {
+    console.log(error);
+    Toast.fire({
+      icon: 'error',
+      position: 'center',
+      text: `${error.message}`,
+      title: 'Error!'
+    });
+  }
+};
 export const getAlljobs = (newPage, rowsPerPage) => async (dispatch) => {
   const axiosInstance = useAxios();
   dispatch(getRequest());

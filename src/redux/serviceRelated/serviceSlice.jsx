@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  eventList: [],
-  eventDetails: {},
+  serviceList: [],
+  serviceDetails: {},
   total_count: 0,
   has_more: false,
   tablePage: 1,
@@ -14,8 +14,8 @@ const initialState = {
   getresponse: null
 };
 
-const eventSlice = createSlice({
-  name: 'event',
+const serviceSlice = createSlice({
+  name: 'service',
   initialState,
   reducers: {
     getPaginationState: (state, action) => {
@@ -34,14 +34,14 @@ const eventSlice = createSlice({
     getSuccess: (state) => {
       state.loading = false;
     },
-    getEventSuccess: (state, action) => {
-      state.eventList = action.payload;
+    getServiceSuccess: (state, action) => {
+      state.serviceList = action.payload;
       state.loading = false;
       state.error = false;
       state.getresponse = null;
     },
-    getEventDetailSuccess: (state, action) => {
-      state.eventDetails = action.payload;
+    getServiceDetailSuccess: (state, action) => {
+      state.serviceDetails = action.payload;
       state.loading = false;
     }
   }
@@ -49,14 +49,13 @@ const eventSlice = createSlice({
 
 export const {
   getRequest,
-  getActivateSuccess,
-  getEventSuccess,
+  getServiceSuccess,
   getMemberDetails,
   getPaginationState,
   getFailedTwo,
   getError,
   getSuccess,
-  getEventDetailSuccess
-} = eventSlice.actions;
+  getServiceDetailSuccess
+} = serviceSlice.actions;
 
-export const eventReducer = eventSlice.reducer;
+export const serviceReducer = serviceSlice.reducer;

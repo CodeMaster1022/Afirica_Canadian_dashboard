@@ -20,11 +20,16 @@ const Toast = Swal.mixin({
   timerProgressBar: true
 });
 
-export const getUsers = () => async (dispatch) => {
+export const getUsers = (rowsPerPage, newPage) => async (dispatch) => {
   const axiosInstance = useAxios();
   dispatch(getRequest());
   try {
-    const result = await axiosInstance.get('/admin/users/');
+    const result = await axiosInstance.get('/admin/users/', {
+      params: {
+        page: newPage,
+        items_per_page: rowsPerPage
+      }
+    });
     if (result.data.data) {
       dispatch(getPaginationState(result.data));
       dispatch(getUsersSuccess(result.data.data));
@@ -69,13 +74,15 @@ export const addUser =
   };
 export const userDeactivate = (id) => async () => {
   const axiosInstance = useAxios();
+  console.log(id);
   try {
-    const result = await axiosInstance.patch(`/users/user/activate/${id}`);
-    if (result.data.data) {
+    const result = await axiosInstance.patch(`/users/user/deactivate/${id}`);
+    console.log(result.data.message);
+    if (result.data) {
       Swal.fire({
-        position: 'top-end',
+        position: 'bottom',
         icon: 'success',
-        title: `${result.response.data.message}`,
+        title: `${result.data.message}`,
         showConfirmButton: false,
         timer: 1500
       });
@@ -93,12 +100,13 @@ export const userReactivate = (id) => async () => {
   const axiosInstance = useAxios();
   // dispatch(getRequest());
   try {
-    const result = await axiosInstance.post(`/users/user/activate/${id}`);
+    const result = await axiosInstance.patch(`/users/user/activate/${id}`);
+    console.log(result);
     if (result.data.data) {
       Toast.fire({
         icon: 'success',
         position: 'center',
-        text: `${result.data.data.message}`,
+        text: `${result.data.message}`,
         title: 'Success!'
       });
     }

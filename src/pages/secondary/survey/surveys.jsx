@@ -4,68 +4,20 @@ import MainCard from 'components/MainCard';
 import AddSurvey from './modal/addSurvey';
 import ReusableTable from './reusableTable';
 import { useEffect, useState } from 'react';
-import useAxios from 'utils/useAxios';
+import { useDispatch, useSelector } from 'react-redux';
+import { getSurvey } from 'redux/surveyRelated/surveyHandle';
+import { getCommunity } from 'redux/communityRelated/communityHandle';
+import RequestLoader from 'components/waiting/RequestLoader';
 export default function Surveys() {
   const [newUserOpen, setNewUserOpen] = useState(false);
-  const [rowData, setRowData] = useState([]);
+  const dispatch = useDispatch();
   const newUserModalOpen = () => setNewUserOpen(true);
   const newUserModalClose = () => setNewUserOpen(false);
-
-  const axiosInstance = useAxios();
+  const { loading } = useSelector((state) => state.survey);
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await axiosInstance.get('/admin/surveys/').then((res) => {
-          console.log(res.data.data, 'as');
-          setRowData(res.data.data);
-        });
-      } catch (error) {
-        alert(error.res.data);
-      }
-    };
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const headers = [
-    {
-      id: 'id',
-      numeric: true,
-      disablePadding: true,
-      label: 'ID'
-    },
-    {
-      id: 'title',
-      numeric: false,
-      disablePadding: false,
-      label: 'Title'
-    },
-    {
-      id: 'link',
-      numeric: false,
-      disablePadding: false,
-      label: 'Link'
-    },
-    {
-      id: 'community',
-      numeric: false,
-      disablePadding: false,
-      label: 'Community'
-    },
-    {
-      id: 'startDate',
-      numeric: false,
-      disablePadding: false,
-      label: 'Start Date'
-    },
-    {
-      id: 'endDate',
-      numeric: false,
-      disablePadding: false,
-      label: 'End Date'
-    }
-  ];
-
+    dispatch(getSurvey());
+    dispatch(getCommunity());
+  }, [dispatch]);
   return (
     <>
       <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
@@ -73,9 +25,7 @@ export default function Surveys() {
           Create Survey
         </Button>
       </Box>
-      <MainCard>
-        <ReusableTable rowData={rowData} headerData={headers} />
-      </MainCard>
+      <MainCard>{loading ? <RequestLoader /> : <ReusableTable />}</MainCard>
       <AddSurvey modalOpen={newUserOpen} modalClose={newUserModalClose} />
     </>
   );

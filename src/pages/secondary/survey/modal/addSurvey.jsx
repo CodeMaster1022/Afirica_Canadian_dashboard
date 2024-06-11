@@ -1,8 +1,11 @@
 import { Modal, useMediaQuery } from '@mui/material';
+import { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
@@ -14,10 +17,19 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { format } from 'date-fns';
-import { useEffect, useState } from 'react';
-import useAxios from 'utils/useAxios';
-
+import { useState } from 'react';
+import CameraOutlined from '@ant-design/icons/CameraOutlined';
+import userImage from 'assets/images/users/avatar-1.png';
+import Avatar from 'components/@extended/Avatar';
+import { getSurvey, surveyCreate } from 'redux/surveyRelated/surveyHandle';
+import { ThemeMode } from 'config';
+import { useDispatch, useSelector } from 'react-redux';
 const AddSurvey = ({ modalOpen, modalClose }) => {
+  const dispatch = useDispatch();
+  const [imageUrl, setSelectedImage] = useState('');
+  const [avatar, setAvatar] = useState(userImage);
+  const { communityList } = useSelector((state) => state.community);
+  const { tablePage, items_per_page } = useSelector((state) => state.survey);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
@@ -25,10 +37,14 @@ const AddSurvey = ({ modalOpen, modalClose }) => {
   const [link, setLink] = useState('');
   const [description, setDescription] = useState('');
   const [community, setCommunity] = useState('');
-  const [communityList, setCommunityList] = useState([]);
 
   const theme = useTheme();
 
+  useEffect(() => {
+    if (imageUrl) {
+      setAvatar(URL.createObjectURL(imageUrl));
+    }
+  }, [imageUrl]);
   const CloseModal = () => {
     modalClose();
   };
@@ -36,20 +52,6 @@ const AddSurvey = ({ modalOpen, modalClose }) => {
   const handleChangeCommunity = (event) => {
     setCommunity(event.target.value);
   };
-
-  const axiosInstance = useAxios();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosInstance.get('/communities/');
-        setCommunityList(response.data.data);
-      } catch (error) {
-        console.log(error.response.data);
-      }
-    };
-    fetchData();
-  }, []);
 
   const isSMScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -68,6 +70,7 @@ const AddSurvey = ({ modalOpen, modalClose }) => {
   };
 
   const handleSubmit = async () => {
+    modalClose();
     const start = new Date(startDate);
     const end = new Date(endDate);
     const formattedStartDate = format(start, 'yyyy-MM-dd');
@@ -82,19 +85,59 @@ const AddSurvey = ({ modalOpen, modalClose }) => {
       startDate: formattedStartDate,
       endDate: formattedEndDate
     };
-
-    try {
-      await axiosInstance.post('/surveys/create/', data);
-      CloseModal();
-    } catch (error) {
-      console.log(error.response);
-    }
+    dispatch(surveyCreate(data));
+    dispatch(getSurvey(items_per_page, tablePage));
   };
 
   return (
     <Modal open={modalOpen} onClose={modalClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
       <Box sx={modalStyle}>
         <Typography>Create New Survey</Typography>
+        <Grid item xs={12}>
+          <Box>
+            <Stack spacing={2.5} alignItems="center">
+              <FormLabel
+                htmlFor="change-avtar"
+                sx={{
+                  position: 'relative',
+                  borderRadius: '50%',
+                  overflow: 'hidden',
+                  '&:hover .MuiBox-root': { opacity: 1 },
+                  cursor: 'pointer'
+                }}
+              >
+                <Avatar alt="Avatar 1" src={avatar} sx={{ width: 150, height: 150, border: '1px dashed' }} />
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    background: theme.palette.mode === ThemeMode.DARK ? 'rgba(255, 255, 255, .75)' : 'rgba(0,0,0,.65)',
+                    width: '100%',
+                    height: '100%',
+                    opacity: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <Stack spacing={0.5} alignItems="center">
+                    <CameraOutlined style={{ color: theme.palette.secondary.lighter, fontSize: '2rem' }} />
+                    <Typography sx={{ color: 'secondary.lighter' }}>Upload</Typography>
+                  </Stack>
+                </Box>
+              </FormLabel>
+              <TextField
+                type="file"
+                id="change-avtar"
+                placeholder="Outlined"
+                variant="outlined"
+                sx={{ display: 'none' }}
+                onChange={(e) => setSelectedImage(e.target.files?.[0])}
+              />
+            </Stack>
+          </Box>
+        </Grid>
         <Divider />
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -169,4 +212,8 @@ const AddSurvey = ({ modalOpen, modalClose }) => {
   );
 };
 
+AddSurvey.propTypes = {
+  modalOpen: PropTypes.bool,
+  modalClose: PropTypes.func
+};
 export default AddSurvey;

@@ -16,6 +16,7 @@ const Community = Loadable(lazy(() => import('pages/main/community/community')))
 const Events = Loadable(lazy(() => import('pages/main/event/events')));
 const Jobs = Loadable(lazy(() => import('pages/main/job/jobs')));
 const Education = Loadable(lazy(() => import('pages/secondary/education/education')));
+const Service = Loadable(lazy(() => import('pages/secondary/service/services')));
 const Error404 = Loadable(lazy(() => import('pages/maintenance/404')));
 
 // ==============================|| MAIN ROUTING ||============================== //
@@ -69,7 +70,7 @@ const MainRoutes = {
         },
         {
           path: 'services',
-          element: <Error404 />
+          element: <Service />
         },
         {
           path: 'settings',

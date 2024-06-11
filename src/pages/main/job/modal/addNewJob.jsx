@@ -21,6 +21,8 @@ import Select from '@mui/material/Select';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { format } from 'date-fns';
+
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getCommunity } from 'redux/communityRelated/communityHandle';
@@ -46,11 +48,11 @@ const AddNewJob = ({ modalOpen, modalClose, currentEvent, action }) => {
   const [name, setName] = useState('');
   const [imageUrl, setSelectedImage] = useState('');
   const [avatar, setAvatar] = useState(userImage);
-  const [title, setTitle] = useState();
+  const [title, setTitle] = useState('');
   const [application, setApplication] = useState('');
   const [level, setLevel] = useState(1);
-  const [start_date, setStartDate] = useState('2024-06-30 01:00:00');
-  const [end_date, setEndDate] = useState();
+  const [start_date, setStartDate] = useState('2024-06-30');
+  const [end_date, setEndDate] = useState(null);
   const [community, setCommunity] = useState('');
   const [external_url, setExternalUrl] = useState('http://localhost:3000/events');
   const [tags, setTags] = useState('Hello');
@@ -58,23 +60,25 @@ const AddNewJob = ({ modalOpen, modalClose, currentEvent, action }) => {
   const [color, setColor] = useState('ffffff');
   const [location, setLocation] = useState('Lahore');
   const [user, setUser] = useState('594aad28-d5a2-408b-82d3-35641e2db6b5');
-  const [type, setType] = useState('Hello');
+  const [type, setType] = useState('');
   const Save = () => {
     if (imageUrl !== '' && title !== '' && description !== '' && community !== '') {
-      if (action === 'create') dispatch(jobsCreate({ title, description, external_url, user, community, start_date, end_date }));
-      if (action === 'edit')
-        dispatch(
-          jobsUpdate({
-            title,
-            description,
-            external_url,
-            user,
-            community,
-            start_date,
-            end_date
-          })
-        );
-      dispatch(getAllEvent());
+      const endDate = new Date(end_date);
+      const startDate = new Date(start_date);
+      const formattedEndDate = format(endDate, 'yyyy-MM-dd');
+      const formattedStartDate = format(startDate, 'yyyy-MM-dd');
+      const data = {
+        title: title,
+        description: description,
+        start_date: formattedStartDate,
+        end_Date: formattedEndDate,
+        external_url: external_url,
+        community: community,
+        tags,
+        user: user
+      };
+      dispatch(jobsCreate({ data }));
+      dispatch(getAlljobs());
       modalClose(true);
       // Swal.fire({
       //   zIndex: 99999,
@@ -230,13 +234,7 @@ const AddNewJob = ({ modalOpen, modalClose, currentEvent, action }) => {
             <Grid item xs={6}>
               <Typography sx={{ color: '#8C8C8C' }}>End Date</Typography>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  format="YYYY-MM-DD"
-                  value={end_date}
-                  // defaultValue={dayjs(surveyInfo?.endDate)}
-                  sx={{ width: '100%' }}
-                  onChange={(e) => setEndDate(e.target.value)}
-                />
+                <DatePicker format="YYYY-MM-DD" value={end_date} onChange={(newValue) => setEndDate(newValue)} sx={{ width: '100%' }} />
               </LocalizationProvider>
             </Grid>
             <Grid item xs={6}>

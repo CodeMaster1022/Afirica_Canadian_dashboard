@@ -8,7 +8,7 @@ import IconButton from 'components/@extended/IconButton';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
-import { getAlljobs } from 'redux/jobRelated/jobHandle';
+import { getAlljobs, jobsDelete } from 'redux/jobRelated/jobHandle';
 
 // project imports
 import EnhancedTableHead from '../../../utils/enhanceFunction';
@@ -62,6 +62,7 @@ export default function JobTable() {
   const profileModalOpen = () => setProfileOpen(true);
   const profileModalClose = () => setProfileOpen(false);
   const handleAction = (id, action) => {
+    console.log(id);
     Swal.fire({
       title: `Do you want to ${action} user ${id}?`,
       showDenyButton: true,
@@ -72,7 +73,7 @@ export default function JobTable() {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
         if (action === 'delete') {
-          // dispatch(eventDelete(id));
+          dispatch(jobsDelete(id));
           dispatch(getAlljobs());
         }
       } else if (result.isDenied) {
@@ -88,7 +89,7 @@ export default function JobTable() {
   };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    dispatch(getAllJobs(rowsPerPage, newPage + 1));
+    dispatch(getAlljobs(rowsPerPage, newPage + 1));
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -131,7 +132,7 @@ export default function JobTable() {
                         <IconButton onClick={() => handleButtonClick(row)}>
                           <EditOutlined />
                         </IconButton>
-                        <IconButton sx={{ color: '#FF4D4F' }} onClick={() => handleAction(row.user.keycloakUserId, 'delete')}>
+                        <IconButton sx={{ color: '#FF4D4F' }} onClick={() => handleAction(row.id, 'delete')}>
                           <DeleteOutlined />
                         </IconButton>
                       </TableCell>
