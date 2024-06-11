@@ -64,10 +64,11 @@ export const getService = (rowsPerPage, newPage) => async (dispatch) => {
 };
 export const getServiceById = (id) => async (dispatch) => {
   const axiosInstance = useAxios();
+  const convertedString = id.replace(/\s/g, '-').toLowerCase();
   try {
-    const result = await axiosInstance.get(`/admin/events/${id}/`);
+    const result = await axiosInstance.get(`admin/services/${convertedString}/`);
     if (result.data) {
-      dispatch(getServiceDetailSuccess(result.data.data));
+      dispatch(getServiceDetailSuccess(result.data));
     }
   } catch (error) {
     // dispatch(getError(error.data));
@@ -78,7 +79,7 @@ export const getServiceByUserId = (id) => async (dispatch) => {
   dispatch(getRequest());
   const axiosInstance = useAxios();
   try {
-    const result = await axiosInstance.post('/admin/events/', {
+    const result = await axiosInstance.post('/admin/services/', {
       params: {
         user_id: id
       }
@@ -94,47 +95,49 @@ export const getServiceByCommunityId = (id) => async (dispatch) => {
   dispatch(getRequest());
   const axiosInstance = useAxios();
   try {
-    const result = await axiosInstance.post('/admin/events/', {
+    const result = await axiosInstance.post('/admin/services/', {
       params: {
         community: id
       }
     });
     if (result.data) {
-      dispatch(getEventDetailSuccess(result.data.data));
+      dispatch(getServiceDetailSuccess(result.data.data));
     }
   } catch (error) {
     dispatch(getError(error.data));
   }
 };
-export const serviceUpdate =
-  ({ data }) =>
-  async () => {
-    const axiosInstance = useAxios();
-    try {
-      const result = await axiosInstance.patch(`/admin/events/${userKeycloakId}/`, data);
-      if (result) {
-        Toast.fire({
-          icon: 'success',
-          position: 'center',
-          text: `${result.data.message}`,
-          title: 'Success!'
-        });
-      }
-    } catch (error) {
+export const serviceUpdate = (id, data) => async (dispatch) => {
+  const axiosInstance = useAxios();
+  const convertedString = id.replace(/\s/g, '-').toLowerCase();
+  try {
+    const result = await axiosInstance.patch(`/admin/services/${convertedString}/`, data);
+    if (result) {
+      dispatch(getSuccess());
       Toast.fire({
-        icon: 'error',
+        icon: 'success',
         position: 'center',
-        text: `${error.message}`,
-        title: 'Error!'
+        text: `${result.data.message}`,
+        title: 'Success!'
       });
     }
-  };
-export const serviceDelete = (id) => async () => {
+  } catch (error) {
+    Toast.fire({
+      icon: 'error',
+      position: 'center',
+      text: `${error.message}`,
+      title: 'Error!'
+    });
+  }
+};
+export const serviceDelete = (id) => async (dispatch) => {
   const axiosInstance = useAxios();
+  const convertedString = id.replace(/\s/g, '-').toLowerCase();
   try {
-    const result = await axiosInstance.delete(`/admin/events/${id}/`);
+    const result = await axiosInstance.delete(`/admin/services/${convertedString}/`);
     console.log(result);
     if (result) {
+      dispatch(getSuccess());
       Toast.fire({
         icon: 'success',
         position: 'center',

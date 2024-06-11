@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import EnhancedTableHead from 'utils/enhanceFunction';
 import Swal from 'sweetalert2';
 // material-ui
-import { Table, Divider, TableBody, TableCell, TableContainer, TableRow, TablePagination } from '@mui/material';
+import { Table, Divider, TableBody, TableCell, TableContainer, TableRow, TablePagination, Typography, Box } from '@mui/material';
 
 import IconButton from 'components/@extended/IconButton';
 // assets
@@ -10,10 +10,12 @@ import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 // import { eventDelete, getAllEvent, getEventById } from 'redux/eventRelated/eventHandle';
-import { educationDelete, getEducation } from 'redux/education/educationHandle';
+import { educationDelete, getEducation, getEducationById } from 'redux/education/educationHandle';
 // project imports
 import MainCard from 'components/MainCard';
-import ViewEducation from './modal/ViewEducation';
+// import ViewEducation from './modal/ViewEducation';
+import AddNewEducation from './modal/addNewEducation';
+import formatDate from 'utils/dateForm';
 // table filter
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -47,7 +49,6 @@ export default function EventTable() {
 
   const { educationList, total_count, tablePage, items_per_page } = useSelector((state) => state.education);
   // Fetch Data
-  const [user, setUser] = useState({});
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [page, setPage] = React.useState(0);
@@ -78,6 +79,11 @@ export default function EventTable() {
         Swal.fire(`${action} was cancelled`, '', 'info');
       }
     });
+  };
+  const handleButtonClick = (id) => {
+    console.log('hello');
+    profileModalOpen();
+    dispatch(getEducationById(id));
   };
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -120,19 +126,26 @@ export default function EventTable() {
                 return (
                   <React.Fragment key={index}>
                     <TableRow role="checkbox" tabIndex={-1}>
-                      <TableCell component="th" id={labelId} scope="row" padding="none" align="center">
+                      <TableCell component="th" id={labelId} scope="row" padding="none" align="left">
                         {row.id}
                       </TableCell>
-                      <TableCell align="center">{row.title}</TableCell>
-                      <TableCell align="center">{row.user.email}</TableCell>
-                      <TableCell align="center">{row.eventHappeningDate}</TableCell>
-                      <TableCell align="center" sx={{ minWidth: '200px' }}>
-                        <IconButton
-                          onClick={() => {
-                            profileModalOpen();
-                            setUser(row);
-                          }}
-                        >
+                      <TableCell align="left">{row.title}</TableCell>
+                      <TableCell align="left">{row.user.email}</TableCell>
+                      <TableCell align="left">{formatDate(row.createdAt)}</TableCell>
+                      <TableCell align="left">
+                        {row.isActive === true && (
+                          <Box sx={{ display: 'flex' }}>
+                            <Typography
+                              fontSize={12}
+                              sx={{ color: '#52C41A', borderRadius: '5px', backgroundColor: '#F6FFED', padding: '5px' }}
+                            >
+                              Active
+                            </Typography>
+                          </Box>
+                        )}
+                      </TableCell>
+                      <TableCell align="left" sx={{ maxWidth: '100px' }}>
+                        <IconButton onClick={() => handleButtonClick(row.id)}>
                           <EditOutlined />
                         </IconButton>
                         <IconButton sx={{ color: '#FF4D4F' }} onClick={() => handleAction(row.id)}>
@@ -164,7 +177,7 @@ export default function EventTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </MainCard>
-      <ViewEducation modalOpen={profileOpen} modalClose={profileModalClose} userDetails={user} />
+      <AddNewEducation modalOpen={profileOpen} modalClose={profileModalClose} action="edit" />
     </>
   );
 }
@@ -180,7 +193,7 @@ const headCells = [
     id: 'title',
     numeric: false,
     disablePadding: false,
-    label: 'Community Group'
+    label: 'Title'
   },
   {
     id: 'email',
@@ -189,10 +202,16 @@ const headCells = [
     label: 'Posted By'
   },
   {
-    id: 'eventHappeningDate',
+    id: 'createdAt',
     numeric: false,
     disablePadding: false,
-    label: 'Event Posted'
+    label: 'Posted Date'
+  },
+  {
+    id: 'status',
+    numeric: false,
+    disablePadding: false,
+    label: 'status'
   },
   {
     id: 'action',

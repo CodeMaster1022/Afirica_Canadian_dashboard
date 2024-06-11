@@ -3,10 +3,7 @@
 import { Modal, useMediaQuery } from '@mui/material';
 import PropTypes, { number } from 'prop-types';
 import { useEffect, useState } from 'react';
-import Swal from 'sweetalert2';
 // material-ui
-import MUIRichTextEditor from 'mui-rte';
-import { convertToRaw } from 'draft-js';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -24,21 +21,22 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getCommunity } from 'redux/communityRelated/communityHandle';
-import { getAlljobs, jobsCreate, jobsUpdate } from 'redux/jobRelated/jobHandle';
+import { jobsUpdate } from 'redux/jobRelated/jobHandle';
 // project import
-// import ProfileTab from './ProfileTab';
 import Avatar from 'components/@extended/Avatar';
 import Button from '@mui/material/Button';
 import { ThemeMode } from 'config';
+import { format } from 'date-fns';
+import dayjs from 'dayjs';
 // assets
 
 import CameraOutlined from '@ant-design/icons/CameraOutlined';
 import userImage from 'assets/images/users/avatar-1.png';
 
-const ViewJob = ({ modalOpen, modalClose }) => {
+const ViewJob = ({ modalOpen, modalClose, action }) => {
   const dispatch = useDispatch();
   const { communityList } = useSelector((state) => state.community);
-  const { jobsList } = useSelector((state) => state.job);
+  const { jobsDetails } = useSelector((state) => state.job);
   useEffect(() => {
     dispatch(getCommunity());
   }, [dispatch]);
@@ -48,49 +46,59 @@ const ViewJob = ({ modalOpen, modalClose }) => {
   const [avatar, setAvatar] = useState(userImage);
   const [title, setTitle] = useState();
   const [application, setApplication] = useState('');
-  const [level, setLevel] = useState(1);
-  const [start_date, setStartDate] = useState('2024-06-30 01:00:00');
+  const [level, setLevel] = useState('beginner');
+  const [start_date, setStartDate] = useState(null);
   const [end_date, setEndDate] = useState();
   const [community, setCommunity] = useState('');
-  const [external_url, setExternalUrl] = useState('http://localhost:3000/events');
-  const [tags, setTags] = useState('Hello');
+  const [id, setId] = useState(null);
+  const [tags, setTags] = useState([]);
   const [description, setDescription] = useState('');
-  const [color, setColor] = useState('ffffff');
-  const [location, setLocation] = useState('Lahore');
+  const [isRemote, setRemote] = useState(false);
+  const [organisation_name, setOrganisation_name] = useState(null);
+  const [location, setLocation] = useState('');
   const [user, setUser] = useState('594aad28-d5a2-408b-82d3-35641e2db6b5');
-  const [type, setType] = useState('Hello');
+  const [type, setType] = useState('full-time');
+  const [qualifications, setQualifications] = useState([]);
+  useEffect(() => {
+    // setRemote(jobsDetails?.isRemote || '');
+    setOrganisation_name(jobsDetails?.organisationName || '');
+    setQualifications(jobsDetails?.qualifications || []);
+    setLevel(jobsDetails?.level || []);
+    setType(jobsDetails?.type || []);
+    setId(jobsDetails?.id || null);
+    setTitle(jobsDetails?.title || '');
+    setApplication(jobsDetails?.externalUrl || '');
+    setCommunity(jobsDetails?.community?.id || null);
+    setTags(jobsDetails?.tags || []);
+    setLocation(jobsDetails?.location || '');
+    setStartDate(dayjs(jobsDetails?.state_date) || null);
+    setEndDate(dayjs(jobsDetails?.end_date) || null);
+    setDescription(jobsDetails?.description || '');
+  }, [jobsDetails]);
   const Save = () => {
-    if (imageUrl !== '' && title !== '' && description !== '' && community !== '') {
-      if (action === 'create') dispatch(jobsCreate({ title, description, external_url, user, community, start_date, end_date }));
-      if (action === 'edit')
-        dispatch(
-          jobsUpdate({
-            title,
-            description,
-            external_url,
-            user,
-            community,
-            start_date,
-            end_date
-          })
-        );
-      dispatch(getAlljobs());
+    const endDate = new Date(end_date);
+    const startDate = new Date(start_date);
+    const formattedEndDate = format(endDate, 'yyyy-MM-dd');
+    const formattedStartDate = format(startDate, 'yyyy-MM-dd');
+    const data = {
+      title: title,
+      description: description,
+      organisation_name: organisation_name,
+      level: level,
+      type: type,
+      external_url: application,
+      user: user,
+      qualifications: qualifications,
+      location: location,
+      is_remote: true,
+      tags: tags,
+      community: community,
+      start_date: formattedStartDate,
+      end_date: formattedEndDate
+    };
+    if (title !== '' && description !== '' && community !== '') {
+      dispatch(jobsUpdate(id, data));
       modalClose(true);
-      // Swal.fire({
-      //   zIndex: 99999,
-      //   title: `Do you want to save?`,
-      //   showDenyButton: true,
-      //   showCancelButton: false,
-      //   confirmButtonText: 'Yes',
-      //   denyButtonText: `No`
-      // }).then((result) => {
-      //   /* Read more about isConfirmed, isDenied below */
-      //   if (result.isConfirmed) {
-      //     console.log('yes');
-      //   } else if (result.isDenied) {
-      //     Swal.fire(`${action} was cancelled`, '', 'info');
-      //   }
-      // });
     }
   };
   const Cancel = () => {
@@ -108,6 +116,7 @@ const ViewJob = ({ modalOpen, modalClose }) => {
     event.preventDefault();
     setLevel(event.target.value);
   };
+
   useEffect(() => {
     if (imageUrl) {
       setAvatar(URL.createObjectURL(imageUrl));
@@ -202,8 +211,8 @@ const ViewJob = ({ modalOpen, modalClose }) => {
                   onChange={handleChangeJobType}
                   placeholder="job type"
                 >
-                  <MenuItem value={0}>Full time</MenuItem>
-                  <MenuItem value={1}>Part time </MenuItem>
+                  <MenuItem value={'full-time'}>Full time</MenuItem>
+                  <MenuItem value={'part-time'}>Part time </MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -215,11 +224,12 @@ const ViewJob = ({ modalOpen, modalClose }) => {
                   id="demo-simple-select"
                   value={level}
                   onChange={handleChangeLevel}
-                  placeholder="community"
+                  placeholder="level"
                 >
-                  <MenuItem value={0}>Beginner</MenuItem>
-                  <MenuItem value={1}>Intermediate </MenuItem>
-                  <MenuItem value={2}>Professional </MenuItem>
+                  <MenuItem value={'beginner'}>Beginner</MenuItem>
+                  <MenuItem value={'intermediate'}>Intermediate </MenuItem>
+                  <MenuItem value={'professional'}>Professional </MenuItem>
+                  <MenuItem value={'expert'}>Expert</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -228,18 +238,18 @@ const ViewJob = ({ modalOpen, modalClose }) => {
               <TextField sx={{ width: '100%' }} value={location} required onChange={(e) => setLocation(e.target.value)} />
             </Grid>
             <Grid item xs={6}>
-              <Typography sx={{ color: '#8C8C8C' }}>End Date</Typography>
+              <Typography sx={{ color: '#8C8C8C' }}>Start Date</Typography>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  format="YYYY-MM-DD"
-                  value={end_date}
-                  // defaultValue={dayjs(surveyInfo?.endDate)}
-                  sx={{ width: '100%' }}
-                  onChange={(e) => setEndDate(e.target.value)}
-                />
+                <DatePicker value={start_date} onChange={(newValue) => setStartDate(newValue)} sx={{ width: '100%' }} />
               </LocalizationProvider>
             </Grid>
             <Grid item xs={6}>
+              <Typography sx={{ color: '#8C8C8C' }}>End Date</Typography>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker value={end_date} onChange={(newValue) => setEndDate(newValue)} sx={{ width: '100%' }} />
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs={12}>
               <Typography sx={{ color: '#8C8C8C' }}>Target Community</Typography>
               <FormControl sx={{ width: '100%' }}>
                 <Select
@@ -265,14 +275,7 @@ const ViewJob = ({ modalOpen, modalClose }) => {
               <Typography sx={{ color: '#8C8C8C' }}>Job Description</Typography>
               <Divider />
               <Box>
-                <MUIRichTextEditor
-                  label="Start typing..."
-                  required
-                  onChange={(value) => {
-                    const content = JSON.stringify(convertToRaw(value.getCurrentContent()));
-                    setDescription(content);
-                  }}
-                />
+                <TextField value={description} onChange={(e) => setDescription(e.target.value)} rows={4} fullWidth multiline />
               </Box>
               <Divider />
             </Grid>
@@ -282,7 +285,7 @@ const ViewJob = ({ modalOpen, modalClose }) => {
                   Cancel
                 </Button>
                 <Button variant="contained" onClick={Save}>
-                  Save
+                  Update
                 </Button>
               </Stack>
             </Grid>
@@ -294,7 +297,7 @@ const ViewJob = ({ modalOpen, modalClose }) => {
 };
 ViewJob.propTypes = {
   modalOpen: PropTypes.bool,
-  id: number,
-  modalClose: PropTypes.func
+  modalClose: PropTypes.func,
+  action: PropTypes.string
 };
-export default AddNewJob;
+export default ViewJob;

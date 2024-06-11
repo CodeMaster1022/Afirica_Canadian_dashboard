@@ -4,6 +4,7 @@ const initialState = {
   serviceList: [],
   serviceDetails: {},
   total_count: 0,
+  status: 'idle',
   has_more: false,
   tablePage: 1,
   items_per_page: 10,
@@ -32,9 +33,11 @@ const serviceSlice = createSlice({
       state.error = action.payload;
     },
     getSuccess: (state) => {
+      state.status = 'added';
       state.loading = false;
     },
     getServiceSuccess: (state, action) => {
+      state.status = 'idle';
       state.serviceList = action.payload;
       state.loading = false;
       state.error = false;

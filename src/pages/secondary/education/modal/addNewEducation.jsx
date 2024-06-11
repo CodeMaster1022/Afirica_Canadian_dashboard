@@ -22,14 +22,11 @@ import MainCard from 'components/MainCard';
 import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import UploadSingleFile from 'components/third-party/dropzone/SingleFile';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getCommunity } from 'redux/communityRelated/communityHandle';
-import { getEducation, educationCreate } from 'redux/education/educationHandle';
+import { educationCreate, educationUpdate } from 'redux/education/educationHandle';
 // project import
 // import ProfileTab from './ProfileTab';
 import Avatar from 'components/@extended/Avatar';
@@ -40,29 +37,35 @@ import { ThemeMode } from 'config';
 import CameraOutlined from '@ant-design/icons/CameraOutlined';
 import userImage from 'assets/images/users/avatar-1.png';
 
-const AddNewEducation = ({ modalOpen, modalClose }) => {
+const AddNewEducation = ({ modalOpen, modalClose, action }) => {
   const dispatch = useDispatch();
   const { communityList } = useSelector((state) => state.community);
+  const { groupList } = useSelector((state) => state.group);
+  const { educationDetailes } = useSelector((state) => state.education);
   useEffect(() => {
     dispatch(getCommunity());
   }, [dispatch]);
   const theme = useTheme();
-  const [name, setName] = useState('');
   const [imageUrl, setSelectedImage] = useState('');
   const [avatar, setAvatar] = useState(userImage);
   const [title, setTitle] = useState('');
-  const [application, setApplication] = useState('');
-  const [level, setLevel] = useState(1);
-  const [start_date, setStartDate] = useState('2024-06-30 01:00:00');
-  const [end_date, setEndDate] = useState();
-  const [community, setCommunity] = useState('');
+  const [community, setCommunity] = useState([]);
   const [video, setVideo] = useState('http://localhost:3000/events');
-  const [group, setGroup] = useState(1);
+  const [group, setGroup] = useState([]);
   const [body, setBody] = useState('');
   const [document, setDocument] = useState('https://localhost.com');
-  const [link, setlink] = useState('Lahore');
+  const [link, setlink] = useState('https://localhost.com');
   const [user, setUser] = useState('594aad28-d5a2-408b-82d3-35641e2db6b5');
   const [type, setType] = useState(1);
+  useEffect(() => {
+    if (action === 'edit') {
+      setTitle(educationDetailes?.title || '');
+      setBody(educationDetailes?.body || '');
+      setCommunity(educationDetailes?.community?.id || '');
+      setlink(educationDetailes?.link || '');
+      setGroup(educationDetailes?.group?.id || '');
+    }
+  }, [educationDetailes, action]);
   const Save = () => {
     const data = {
       title: title,
@@ -72,27 +75,12 @@ const AddNewEducation = ({ modalOpen, modalClose }) => {
       community: community,
       document,
       link,
-      group,
+      group: group,
       user
     };
     modalClose(true);
-    dispatch(educationCreate(data));
-    dispatch(getEducation());
-    // Swal.fire({
-    //   zIndex: 99999,
-    //   title: `Do you want to save?`,
-    //   showDenyButton: true,
-    //   showCancelButton: false,
-    //   confirmButtonText: 'Yes',
-    //   denyButtonText: `No`
-    // }).then((result) => {
-    //   /* Read more about isConfirmed, isDenied below */
-    //   if (result.isConfirmed) {
-    //     console.log('yes');
-    //   } else if (result.isDenied) {
-    //     Swal.fire(`${action} was cancelled`, '', 'info');
-    //   }
-    // });
+    if (action === 'create') dispatch(educationCreate(data));
+    if (action === 'edit') dispatch(educationUpdate(educationDetailes.id, data));
   };
   const Cancel = () => {
     modalClose(true);
@@ -101,13 +89,13 @@ const AddNewEducation = ({ modalOpen, modalClose }) => {
     event.preventDefault();
     setCommunity(event.target.value);
   };
+  const handleChangeGroup = (event) => {
+    event.preventDefault();
+    setGroup(event.target.value);
+  };
   const handleChangeJobType = (event) => {
     event.preventDefault();
     setType(event.target.value);
-  };
-  const handleChangeLevel = (event) => {
-    event.preventDefault();
-    setLevel(event.target.value);
   };
   useEffect(() => {
     if (imageUrl) {
@@ -132,7 +120,7 @@ const AddNewEducation = ({ modalOpen, modalClose }) => {
     <>
       <Modal open={modalOpen} onClose={modalClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={modalstyle}>
-          <Typography>Add New Job</Typography>
+          <Typography>Add New Education</Typography>
           <Divider />
           <Box sx={{ height: '10px' }} />
           <Divider />
@@ -188,7 +176,7 @@ const AddNewEducation = ({ modalOpen, modalClose }) => {
               <Typography sx={{ color: '#8C8C8C' }}>Title</Typography>
               <TextField sx={{ width: '100%' }} value={title} required onChange={(e) => setTitle(e.target.value)} />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               <Typography sx={{ color: '#8C8C8C' }}>Target Community</Typography>
               <FormControl sx={{ width: '100%' }}>
                 <Select
@@ -206,7 +194,25 @@ const AddNewEducation = ({ modalOpen, modalClose }) => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
+              <Typography sx={{ color: '#8C8C8C' }}>Target Group</Typography>
+              <FormControl sx={{ width: '100%' }}>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={group}
+                  onChange={handleChangeGroup}
+                  placeholder="level"
+                >
+                  {groupList.map((group, index) => (
+                    <MenuItem value={group.id} key={index}>
+                      {group.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
               <Typography sx={{ color: '#8C8C8C' }}>Category</Typography>
               {/* <TextField sx={{ width: '100%' }} value={type} required onChange={(e) => setJobType(e.target.value)} /> */}
               <FormControl sx={{ width: '100%' }}>
@@ -261,14 +267,7 @@ const AddNewEducation = ({ modalOpen, modalClose }) => {
               <Typography sx={{ color: '#8C8C8C' }}>Job Description</Typography>
               <Divider />
               <Box>
-                <MUIRichTextEditor
-                  label="Start typing..."
-                  required
-                  onChange={(value) => {
-                    const content = JSON.stringify(convertToRaw(value.getCurrentContent()));
-                    setBody(content);
-                  }}
-                />
+                <TextField value={body} onChange={(e) => setBody(e.target.value)} fullWidth multiline rows={4} />
               </Box>
               <Divider />
             </Grid>
@@ -290,6 +289,7 @@ const AddNewEducation = ({ modalOpen, modalClose }) => {
 };
 AddNewEducation.propTypes = {
   modalOpen: PropTypes.bool,
-  modalClose: PropTypes.func
+  modalClose: PropTypes.func,
+  action: PropTypes.string
 };
 export default AddNewEducation;

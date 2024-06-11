@@ -12,7 +12,7 @@ import RequestLoader from 'components/waiting/RequestLoader';
 import AddNewService from './modal/addNewService';
 
 export default function Events() {
-  const { loading } = useSelector((state) => state.service);
+  const { loading, status } = useSelector((state) => state.service);
   const [newUserOpen, setNewUserOpen] = useState(false);
   const newUserModalOpen = () => setNewUserOpen(true);
   const newUserModalClose = () => setNewUserOpen(false);
@@ -22,6 +22,9 @@ export default function Events() {
     dispatch(getService());
     dispatch(getCategory());
   }, [dispatch]);
+  useEffect(() => {
+    if (status === 'added') dispatch(getService());
+  }, [dispatch, status]);
   return (
     <>
       <Box sx={{ padding: 2 }}>
@@ -30,7 +33,7 @@ export default function Events() {
         </Button>
       </Box>
       <MainCard>{loading ? <RequestLoader /> : <ServiceTable />}</MainCard>
-      <AddNewService modalOpen={newUserOpen} modalClose={newUserModalClose} />
+      <AddNewService modalOpen={newUserOpen} modalClose={newUserModalClose} action="create" />
     </>
   );
 }

@@ -1,10 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  educationList: [],
-  educationDetailes: [],
+  cultureList: [],
+  cultureDetailes: [],
   loading: false,
-  status: 'idle',
   error: null,
   response: null,
   total_count: 0,
@@ -14,8 +13,8 @@ const initialState = {
   getresponse: null
 };
 
-const educationSlice = createSlice({
-  name: 'education',
+const culturalSlice = createSlice({
+  name: 'cultural',
   initialState,
   reducers: {
     getPaginationState: (state, action) => {
@@ -27,19 +26,14 @@ const educationSlice = createSlice({
     getRequest: (state) => {
       state.loading = true;
     },
-    getSuccess: (state) => {
-      state.status = 'added';
-      state.loading = false;
-    },
-    getEducationSuccess: (state, action) => {
-      state.status = 'idle';
+    getCultureSuccess: (state, action) => {
       state.educationList = action.payload;
       state.loading = false;
       state.error = false;
       state.getresponse = null;
     },
-    getEducationDetailedSuccess: (state, action) => {
-      state.educationDetailes = action.payload;
+    getCultureDetailedSuccess: (state, action) => {
+      state.cultureDetailes = action.payload;
       state.loading = false;
       state.error = false;
       state.getresponse = null;
@@ -51,14 +45,6 @@ const educationSlice = createSlice({
   }
 });
 
-export const {
-  getRequest,
-  getSuccess,
-  getPaginationState,
-  getEducationSuccess,
-  getEducationDetailedSuccess,
-  getEducationDetailedFailed,
-  getError
-} = educationSlice.actions;
+export const { getRequest, getPaginationState, getCulturalSuccess, getCulturalDetailedSuccess, getError } = educationSlice.actions;
 
-export const educationReducer = educationSlice.reducer;
+export const culturalReducer = culturalSlice.reducer;

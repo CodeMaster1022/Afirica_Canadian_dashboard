@@ -24,7 +24,7 @@ import { format } from 'date-fns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
-import { serviceCreate, getService } from 'redux/serviceRelated/serviceHandle';
+import { serviceCreate, getService, serviceUpdate } from 'redux/serviceRelated/serviceHandle';
 // project import
 // import ProfileTab from './ProfileTab';
 import Avatar from 'components/@extended/Avatar';
@@ -37,13 +37,22 @@ import CameraOutlined from '@ant-design/icons/CameraOutlined';
 import userImage from 'assets/images/users/avatar-1.png';
 import { userDetail } from 'redux/userRelated/userHandle';
 
-const AddNewService = ({ modalOpen, modalClose }) => {
+const AddNewService = ({ modalOpen, modalClose, action }) => {
   const dispatch = useDispatch();
   const { categoryList } = useSelector((state) => state.category);
+  const { serviceDetails } = useSelector((state) => state.service);
   const theme = useTheme();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
+  useEffect(() => {
+    console.log(serviceDetails.description, action);
+    if (action == 'edit') {
+      setTitle(serviceDetails?.title || '');
+      setDescription(serviceDetails?.description || '');
+      setCategory(serviceDetails?.category || '');
+    }
+  }, [serviceDetails, action]);
   const Save = () => {
     const data = {
       title: title,
@@ -51,8 +60,8 @@ const AddNewService = ({ modalOpen, modalClose }) => {
       categories: []
     };
     if (title !== '' && description !== '') {
-      dispatch(serviceCreate(data));
-      dispatch(getService());
+      if (action === 'create') dispatch(serviceCreate(data));
+      if (action === 'edit') dispatch(serviceUpdate(serviceDetails.title, data));
       modalClose(true);
     }
   };
@@ -133,7 +142,7 @@ const AddNewService = ({ modalOpen, modalClose }) => {
 };
 AddNewService.propTypes = {
   modalOpen: PropTypes.bool,
-  id: number,
+  action: PropTypes.string,
   modalClose: PropTypes.func
 };
 export default AddNewService;

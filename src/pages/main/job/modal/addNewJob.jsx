@@ -3,10 +3,7 @@
 import { Modal, useMediaQuery } from '@mui/material';
 import PropTypes, { number } from 'prop-types';
 import { useEffect, useState } from 'react';
-import Swal from 'sweetalert2';
 // material-ui
-import MUIRichTextEditor from 'mui-rte';
-import { convertToRaw } from 'draft-js';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -26,7 +23,7 @@ import { format } from 'date-fns';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getCommunity } from 'redux/communityRelated/communityHandle';
-import { getAlljobs, jobsCreate, jobsUpdate } from 'redux/jobRelated/jobHandle';
+import { jobsCreate } from 'redux/jobRelated/jobHandle';
 // project import
 // import ProfileTab from './ProfileTab';
 import Avatar from 'components/@extended/Avatar';
@@ -37,10 +34,9 @@ import { ThemeMode } from 'config';
 import CameraOutlined from '@ant-design/icons/CameraOutlined';
 import userImage from 'assets/images/users/avatar-1.png';
 
-const AddNewJob = ({ modalOpen, modalClose, currentEvent, action }) => {
+const AddNewJob = ({ modalOpen, modalClose }) => {
   const dispatch = useDispatch();
   const { communityList } = useSelector((state) => state.community);
-  const { jobsList } = useSelector((state) => state.job);
   useEffect(() => {
     dispatch(getCommunity());
   }, [dispatch]);
@@ -57,12 +53,11 @@ const AddNewJob = ({ modalOpen, modalClose, currentEvent, action }) => {
   const [external_url, setExternalUrl] = useState('http://localhost:3000/events');
   const [tags, setTags] = useState('Hello');
   const [description, setDescription] = useState('');
-  const [color, setColor] = useState('ffffff');
   const [location, setLocation] = useState('Lahore');
   const [user, setUser] = useState('594aad28-d5a2-408b-82d3-35641e2db6b5');
   const [type, setType] = useState('');
   const Save = () => {
-    if (imageUrl !== '' && title !== '' && description !== '' && community !== '') {
+    if (imageUrl !== '' && title !== '' && description !== '' && community !== '' && end_date !== '') {
       const endDate = new Date(end_date);
       const startDate = new Date(start_date);
       const formattedEndDate = format(endDate, 'yyyy-MM-dd');
@@ -78,23 +73,7 @@ const AddNewJob = ({ modalOpen, modalClose, currentEvent, action }) => {
         user: user
       };
       dispatch(jobsCreate({ data }));
-      dispatch(getAlljobs());
       modalClose(true);
-      // Swal.fire({
-      //   zIndex: 99999,
-      //   title: `Do you want to save?`,
-      //   showDenyButton: true,
-      //   showCancelButton: false,
-      //   confirmButtonText: 'Yes',
-      //   denyButtonText: `No`
-      // }).then((result) => {
-      //   /* Read more about isConfirmed, isDenied below */
-      //   if (result.isConfirmed) {
-      //     console.log('yes');
-      //   } else if (result.isDenied) {
-      //     Swal.fire(`${action} was cancelled`, '', 'info');
-      //   }
-      // });
     }
   };
   const Cancel = () => {
@@ -234,7 +213,7 @@ const AddNewJob = ({ modalOpen, modalClose, currentEvent, action }) => {
             <Grid item xs={6}>
               <Typography sx={{ color: '#8C8C8C' }}>End Date</Typography>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker format="YYYY-MM-DD" value={end_date} onChange={(newValue) => setEndDate(newValue)} sx={{ width: '100%' }} />
+                <DatePicker value={end_date} onChange={(newValue) => setEndDate(newValue)} sx={{ width: '100%' }} />
               </LocalizationProvider>
             </Grid>
             <Grid item xs={6}>
@@ -263,18 +242,11 @@ const AddNewJob = ({ modalOpen, modalClose, currentEvent, action }) => {
               <Typography sx={{ color: '#8C8C8C' }}>Job Description</Typography>
               <Divider />
               <Box>
-                <MUIRichTextEditor
-                  label="Start typing..."
-                  required
-                  onChange={(value) => {
-                    const content = JSON.stringify(convertToRaw(value.getCurrentContent()));
-                    setDescription(content);
-                  }}
-                />
+                <TextField value={description} onChange={(e) => setDescription(e.target.value)} multiline rows={4} fullWidth />
               </Box>
               <Divider />
             </Grid>
-            <Grid sx={{ marginTop: '35px' }} container>
+            <Grid container>
               <Stack direction="row" justifyContent="flex-end" spacing={2} paddingTop={1} sx={{ width: '100%' }}>
                 <Button variant="contained" color="error" onClick={Cancel}>
                   Cancel
@@ -293,8 +265,6 @@ const AddNewJob = ({ modalOpen, modalClose, currentEvent, action }) => {
 AddNewJob.propTypes = {
   modalOpen: PropTypes.bool,
   id: number,
-  modalClose: PropTypes.func,
-  currentEvent: PropTypes.object,
-  action: PropTypes.string
+  modalClose: PropTypes.func
 };
 export default AddNewJob;

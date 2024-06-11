@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 // material-ui
@@ -9,10 +8,11 @@ import IconButton from 'components/@extended/IconButton';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
-import { serviceDelete, getService } from 'redux/serviceRelated/serviceHandle';
+import { serviceDelete, getService, getServiceById } from 'redux/serviceRelated/serviceHandle';
 // project imports
 import MainCard from 'components/MainCard';
-import ViewService from './modal/ViewService';
+// import ViewService from './modal/ViewService';
+import AddNewService from './modal/addNewService';
 // table filter
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -46,18 +46,16 @@ export default function ServiceTable() {
 
   const { serviceList, total_count, tablePage, items_per_page } = useSelector((state) => state.service);
   // Fetch Data
-  const [user, setUser] = useState({});
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [page, setPage] = React.useState(0);
   const [dense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(items_per_page);
   let data = stableSort(serviceList, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-  // const [user, setUser] = useState({});
-  // const handleButtonClick = (row) => {
-  //   profileModalOpen();
-  //   setUser(row);
-  // };
+  const handleButtonClick = (id) => {
+    profileModalOpen();
+    dispatch(getServiceById(id));
+  };
   const [profileOpen, setProfileOpen] = useState(false);
   const profileModalOpen = () => setProfileOpen(true);
   const profileModalClose = () => setProfileOpen(false);
@@ -72,7 +70,6 @@ export default function ServiceTable() {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
         dispatch(serviceDelete(id));
-        dispatch(getService(items_per_page, tablePage));
       } else if (result.isDenied) {
         Swal.fire(`${action} was cancelled`, '', 'info');
       }
@@ -126,15 +123,10 @@ export default function ServiceTable() {
                       <TableCell align="left">{row.createdBy.email}</TableCell>
                       <TableCell align="left">{row.isMobStatus ? 'true' : 'false'}</TableCell>
                       <TableCell align="left" sx={{ minWidth: '200px' }}>
-                        <IconButton
-                          onClick={() => {
-                            profileModalOpen();
-                            setUser(row);
-                          }}
-                        >
+                        <IconButton onClick={() => handleButtonClick(row.title)}>
                           <EditOutlined />
                         </IconButton>
-                        <IconButton sx={{ color: '#FF4D4F' }} onClick={() => handleAction(row.id, 'delete')}>
+                        <IconButton sx={{ color: '#FF4D4F' }} onClick={() => handleAction(row.title, 'delete')}>
                           <DeleteOutlined />
                         </IconButton>
                       </TableCell>
@@ -163,7 +155,7 @@ export default function ServiceTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </MainCard>
-      <ViewService modalOpen={profileOpen} modalClose={profileModalClose} userDetails={user} />
+      <AddNewService modalOpen={profileOpen} modalClose={profileModalClose} action="edit" />
     </>
   );
 }

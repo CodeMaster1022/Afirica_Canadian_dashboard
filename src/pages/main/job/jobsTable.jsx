@@ -8,12 +8,13 @@ import IconButton from 'components/@extended/IconButton';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
-import { getAlljobs, jobsDelete } from 'redux/jobRelated/jobHandle';
+import { getAlljobs, jobsDelete, getjobsById } from 'redux/jobRelated/jobHandle';
+import ViewJob from './modal/ViewJob';
 
 // project imports
 import EnhancedTableHead from '../../../utils/enhanceFunction';
 import MainCard from 'components/MainCard';
-import AddNewJob from './modal/addNewJob';
+
 // table filter
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -53,10 +54,9 @@ export default function JobTable() {
   const [dense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(items_per_page);
   let data = stableSort(jobsList, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-  const [user, setUser] = useState({});
-  const handleButtonClick = (rowData) => {
+  const handleButtonClick = (id) => {
     profileModalOpen();
-    setUser(rowData);
+    dispatch(getjobsById(id));
   };
   const [profileOpen, setProfileOpen] = useState(false);
   const profileModalOpen = () => setProfileOpen(true);
@@ -129,7 +129,7 @@ export default function JobTable() {
                       <TableCell align="center">{row.user.email}</TableCell>
                       <TableCell align="center">{formatDate(row.createdAt)}</TableCell>
                       <TableCell align="center" sx={{ minWidth: '200px' }}>
-                        <IconButton onClick={() => handleButtonClick(row)}>
+                        <IconButton onClick={() => handleButtonClick(row.id)}>
                           <EditOutlined />
                         </IconButton>
                         <IconButton sx={{ color: '#FF4D4F' }} onClick={() => handleAction(row.id, 'delete')}>
@@ -161,7 +161,7 @@ export default function JobTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </MainCard>
-      <AddNewJob modalOpen={profileOpen} modalClose={profileModalClose} currentEvent={user} action="edit" />
+      <ViewJob modalOpen={profileOpen} modalClose={profileModalClose} />
     </>
   );
 }

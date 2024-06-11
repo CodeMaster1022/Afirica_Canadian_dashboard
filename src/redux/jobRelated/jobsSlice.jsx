@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
+  status: 'idle',
   jobsList: [],
   loading: false,
   jobsDetails: [],
@@ -29,14 +30,19 @@ const jobSlice = createSlice({
       state.memberLoading = true;
     },
     getjobsSuccess: (state, action) => {
+      state.status = 'idle';
       state.jobsList = action.payload;
       state.loading = false;
       state.error = false;
       state.getresponse = null;
     },
+    getSuccess: (state) => {
+      state.status = 'added';
+      state.loading = false;
+    },
     getjobsDetailSuccess: (state, action) => {
-      state.eventDetails = action.payload;
-      loading = false;
+      state.jobsDetails = action.payload;
+      state.loading = false;
     },
     getFailedTwo: (state, action) => {
       state.getresponse = action.payload;
@@ -50,6 +56,7 @@ const jobSlice = createSlice({
   }
 });
 
-export const { getRequest, getjobsSuccess, getPaginationState, getFailedTwo, getError, getjobsDetailSuccess } = jobSlice.actions;
+export const { getRequest, getjobsSuccess, getSuccess, getPaginationState, getFailedTwo, getError, getjobsDetailSuccess } =
+  jobSlice.actions;
 
 export const jobReducer = jobSlice.reducer;

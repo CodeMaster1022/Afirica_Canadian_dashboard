@@ -17,7 +17,6 @@ import {
   TeamOutlined,
   UserOutlined
 } from '@ant-design/icons';
-import { FormattedMessage } from 'react-intl';
 
 // type
 
@@ -47,7 +46,7 @@ const secondary = {
   children: [
     {
       id: 'survey',
-      title: <FormattedMessage id="Surveys" />,
+      title: 'survey',
       type: 'item',
       url: '/surveys',
       icon: icons.FileDoneOutlined

@@ -10,7 +10,7 @@ import { getAlljobs } from 'redux/jobRelated/jobHandle';
 // Request Loader
 import RequestLoader from 'components/waiting/RequestLoader';
 export default function Jobs() {
-  const { loading } = useSelector((state) => state.job);
+  const { loading, status } = useSelector((state) => state.job);
   const [newUserOpen, setNewUserOpen] = useState(false);
   const newUserModalOpen = () => setNewUserOpen(true);
   const newUserModalClose = () => setNewUserOpen(false);
@@ -18,7 +18,7 @@ export default function Jobs() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAlljobs());
-  }, [dispatch]);
+  }, [dispatch, status]);
   return (
     <>
       <Box sx={{ padding: 2 }}>
