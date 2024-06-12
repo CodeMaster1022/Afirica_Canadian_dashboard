@@ -140,9 +140,9 @@ const AddNewJob = ({ modalOpen, modalClose, action }) => {
     ) {
       console.log(imageUrl, 'iamgeurl');
       // dispatch(imageUpload(imageUrl, '32lk4j2lk34234l24.jpg'));
-      // if (action === 'create') dispatch(jobsCreate({ input }));
-      // if (action === 'edit') dispatch(jobsUpdate({ input }));
-      // modalClose(true);
+      if (action === 'create') dispatch(jobsCreate({ input }));
+      if (action === 'edit') dispatch(jobsUpdate({ input }));
+      modalClose(true);
     }
   };
 
