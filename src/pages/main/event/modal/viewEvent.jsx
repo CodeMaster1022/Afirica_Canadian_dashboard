@@ -19,7 +19,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { format } from 'date-fns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import ColorPicker from 'material-ui-color-picker';
+import { MuiColorInput } from 'mui-color-input';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getCommunity } from 'redux/communityRelated/communityHandle';
@@ -97,6 +97,9 @@ const ViewEvent = ({ modalOpen, modalClose, action }) => {
   const handleChangeCommunity = (event) => {
     event.preventDefault();
     setCommunity(event.target.value);
+  };
+  const handleColorChange = (newValue) => {
+    setColor(newValue);
   };
   useEffect(() => {
     if (imageUrl) {
@@ -181,13 +184,7 @@ const ViewEvent = ({ modalOpen, modalClose, action }) => {
                 </Grid>
                 <Grid item xs={12}>
                   <Typography sx={{ color: '#8C8C8C', marginTop: '10px' }}>Color</Typography>
-                  <TextField
-                    value={color}
-                    onChange={(e) => {
-                      setColor(e.target.value);
-                    }}
-                    fullWidth
-                  />
+                  <MuiColorInput format="hex" value={color} onChange={handleColorChange} sx={{ width: '100%' }} />
                 </Grid>
                 <Grid item xs={12}>
                   <Typography sx={{ color: '#8C8C8C' }}>Event Url</Typography>

@@ -80,21 +80,6 @@ const AddNewEvent = ({ modalOpen, modalClose }) => {
       dispatch(eventCreate(data));
       dispatch(getAllEvent(items_per_page, tablePage));
       modalClose(true);
-      // Swal.fire({
-      //   zIndex: 99999,
-      //   title: `Do you want to save?`,
-      //   showDenyButton: true,
-      //   showCancelButton: false,
-      //   confirmButtonText: 'Yes',
-      //   denyButtonText: `No`
-      // }).then((result) => {
-      //   /* Read more about isConfirmed, isDenied below */
-      //   if (result.isConfirmed) {
-      //     console.log('yes');
-      //   } else if (result.isDenied) {
-      //     Swal.fire(`${action} was cancelled`, '', 'info');
-      //   }
-      // });
     }
   };
   const Cancel = () => {
