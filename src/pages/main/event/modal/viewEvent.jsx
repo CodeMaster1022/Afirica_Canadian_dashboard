@@ -3,10 +3,7 @@
 import { Modal, useMediaQuery } from '@mui/material';
 import PropTypes, { number } from 'prop-types';
 import { useEffect, useState } from 'react';
-import Swal from 'sweetalert2';
 // material-ui
-import MUIRichTextEditor from 'mui-rte';
-import { convertToRaw } from 'draft-js';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -22,6 +19,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { format } from 'date-fns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import ColorPicker from 'material-ui-color-picker';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getCommunity } from 'redux/communityRelated/communityHandle';
@@ -31,15 +29,16 @@ import { eventCreate, eventUpdate, getAllEvent } from 'redux/eventRelated/eventH
 import Avatar from 'components/@extended/Avatar';
 import Button from '@mui/material/Button';
 import { ThemeMode } from 'config';
+import dayjs from 'dayjs';
 // assets
 
 import CameraOutlined from '@ant-design/icons/CameraOutlined';
 import userImage from 'assets/images/users/avatar-1.png';
 
-const ViewEvent = ({ modalOpen, modalClose, userDetails }) => {
+const ViewEvent = ({ modalOpen, modalClose, action }) => {
   const dispatch = useDispatch();
   const { communityList } = useSelector((state) => state.community);
-  const { tablePage, items_per_page } = useSelector((state) => state.event);
+  const { tablePage, items_per_page, eventDetails } = useSelector((state) => state.event);
   useEffect(() => {
     dispatch(getCommunity());
   }, [dispatch]);
@@ -50,27 +49,28 @@ const ViewEvent = ({ modalOpen, modalClose, userDetails }) => {
   const [title, setTitle] = useState('');
   const [venue, setVenue] = useState('');
   const [price, setPrice] = useState('');
-  const [eventHappeningDate, setEventHappeningDate] = useState(null);
+  const [eventHappeningDate, setEventHappeningDate] = useState(dayjs('2023-01-01'));
   const [date, setDate] = useState('2024-06-30 01:00:00');
   const [community, setCommunity] = useState('');
   const [eventUrl, setUrl] = useState('http://localhost:3000/events');
   const [video, setVideo] = useState('Hello');
   const [description, setDescription] = useState('');
-  const [color, setColor] = useState('ffffff');
+  const [color, setColor] = useState('#000');
   const [location, setLocation] = useState('Lahore');
   const [user, setUser] = useState('594aad28-d5a2-408b-82d3-35641e2db6b5');
-  const [documnet, setDocument] = useState('Hello');
-  const [eventExpiryDate, setEventExpiryDate] = useState('2024-06-30 01:00:00');
+  const [eventExpiryDate, setEventExpiryDate] = useState(dayjs('2023-01-01'));
   const Save = () => {
     const eventDate = new Date(eventHappeningDate);
     const formattedEventDate = format(eventDate, 'yyyy-MM-dd');
+    const expDate = new Date(eventExpiryDate);
+    const formattedExpDate = format(expDate, 'yyyy-MM-dd');
     const data = {
       title: title,
       description: description,
       eventHappeningDate: formattedEventDate,
       eventUrl: eventUrl,
       community: community,
-      eventExpiryDate: eventExpiryDate,
+      eventExpiryDate: formattedExpDate,
       color: color,
       location: location,
       user: user
@@ -79,26 +79,18 @@ const ViewEvent = ({ modalOpen, modalClose, userDetails }) => {
       dispatch(eventCreate(data));
       dispatch(getAllEvent(items_per_page, tablePage));
       modalClose(true);
-      // Swal.fire({
-      //   zIndex: 99999,
-      //   title: `Do you want to save?`,
-      //   showDenyButton: true,
-      //   showCancelButton: false,
-      //   confirmButtonText: 'Yes',
-      //   denyButtonText: `No`
-      // }).then((result) => {
-      //   /* Read more about isConfirmed, isDenied below */
-      //   if (result.isConfirmed) {
-      //     console.log('yes');
-      //   } else if (result.isDenied) {
-      //     Swal.fire(`${action} was cancelled`, '', 'info');
-      //   }
-      // });
     }
   };
   useEffect(() => {
-    setTitle(userDetails?.title || '');
-  }, [userDetails]);
+    if (action === 'edit') {
+      setTitle(eventDetails?.title || '');
+      setEventExpiryDate(dayjs(eventDetails?.eventExpiryDate || ''));
+      setEventHappeningDate(dayjs(eventDetails?.eventHappeningDate || ''));
+      setCommunity(eventDetails?.community?.id || '');
+      setDescription(eventDetails?.description || '');
+      setColor(eventDetails?.color || '');
+    }
+  }, [eventDetails, action]);
   const Cancel = () => {
     modalClose(true);
   };
@@ -120,7 +112,7 @@ const ViewEvent = ({ modalOpen, modalClose, userDetails }) => {
     bgcolor: 'background.paper',
     borderRadius: '5px',
     boxShadow: 24,
-    width: isSMScreen ? '90%' : '50%',
+    width: isSMScreen ? '90%' : '40%',
     maxHeight: '90vh',
     overflow: 'auto',
     p: isSMScreen ? 2 : 4
@@ -182,31 +174,43 @@ const ViewEvent = ({ modalOpen, modalClose, userDetails }) => {
               </Box>
             </Grid>
             <>
-              <Grid container spacing={1}>
+              <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <Typography sx={{ color: '#8C8C8C' }}>Title</Typography>
                   <TextField sx={{ width: '100%' }} value={title} required onChange={(e) => setTitle(e.target.value)} />
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography sx={{ color: '#8C8C8C' }}>Venue</Typography>
-                  <TextField sx={{ width: '100%' }} value={venue} required onChange={(e) => setVenue(e.target.value)} />
+                  <Typography sx={{ color: '#8C8C8C', marginTop: '10px' }}>Color</Typography>
+                  <TextField
+                    value={color}
+                    onChange={(e) => {
+                      setColor(e.target.value);
+                    }}
+                    fullWidth
+                  />
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography sx={{ color: '#8C8C8C', paddingTop: '5px' }}>Price</Typography>
-                  <TextField sx={{ width: '100%' }} value={price} required onChange={(e) => setPrice(e.target.value)} />
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography sx={{ color: '#8C8C8C', paddingTop: '5px' }}>Registration Link</Typography>
+                  <Typography sx={{ color: '#8C8C8C' }}>Event Url</Typography>
                   <TextField sx={{ width: '100%' }} value={eventUrl} required onChange={(e) => setUrl(e.target.value)} />
                 </Grid>
                 <Grid item xs={6}>
-                  <Typography sx={{ color: '#8C8C8C', paddingTop: '5px' }}>Date</Typography>
+                  <Typography sx={{ color: '#8C8C8C' }}>HappeningDate</Typography>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker format="YYYY-MM-DD" value={eventHappeningDate} onChange={(newValue) => setEventHappeningDate(newValue)} />
+                    <DatePicker
+                      value={eventHappeningDate}
+                      onChange={(newValue) => setEventHappeningDate(newValue)}
+                      sx={{ width: '100%' }}
+                    />
                   </LocalizationProvider>
                 </Grid>
                 <Grid item xs={6}>
-                  <Typography sx={{ color: '#8C8C8C', paddingTop: '5px' }}>Target Community</Typography>
+                  <Typography sx={{ color: '#8C8C8C' }}>ExpiryDate</Typography>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker value={eventExpiryDate} onChange={(newValue) => setEventExpiryDate(newValue)} sx={{ width: '100%' }} />
+                  </LocalizationProvider>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography sx={{ color: '#8C8C8C' }}>Target Community</Typography>
                   <FormControl sx={{ width: '100%' }}>
                     <Select
                       labelId="demo-simple-select-label"
@@ -223,23 +227,16 @@ const ViewEvent = ({ modalOpen, modalClose, userDetails }) => {
                     </Select>
                   </FormControl>
                 </Grid>
-              </Grid>
-              <Grid container>
-                <Box sx={{ padding: '10px' }}>
-                  <Typography sx={{ color: '#8C8C8C' }}>Body</Typography>
-                  <Divider />
+                <Grid item xs={12}>
                   <Box>
-                    <MUIRichTextEditor
-                      label="Start typing..."
-                      required
-                      onChange={(value) => {
-                        const content = JSON.stringify(convertToRaw(value.getCurrentContent()));
-                        setDescription(content);
-                      }}
-                    />
+                    <Typography sx={{ color: '#8C8C8C' }}>Body</Typography>
+                    <Divider />
+                    <Box>
+                      <TextField value={description} onChange={(e) => setDescription(e.target.value)} fullWidth multiline rows={4} />
+                    </Box>
+                    <Divider />
                   </Box>
-                  <Divider />
-                </Box>
+                </Grid>
               </Grid>
               <Grid sx={{ marginTop: '35px' }} container>
                 <Stack direction="row" justifyContent="flex-end" spacing={2} paddingTop={1} sx={{ width: '100%' }}>
@@ -261,6 +258,6 @@ const ViewEvent = ({ modalOpen, modalClose, userDetails }) => {
 ViewEvent.propTypes = {
   modalOpen: PropTypes.bool,
   modalClose: PropTypes.func,
-  userDetails: PropTypes.object
+  action: PropTypes.string
 };
 export default ViewEvent;

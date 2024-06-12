@@ -74,7 +74,6 @@ export default function JobTable() {
       if (result.isConfirmed) {
         if (action === 'delete') {
           dispatch(jobsDelete(id));
-          dispatch(getAlljobs());
         }
       } else if (result.isDenied) {
         Swal.fire(`${action} was cancelled`, '', 'info');
@@ -122,13 +121,13 @@ export default function JobTable() {
                 return (
                   <React.Fragment key={index}>
                     <TableRow role="checkbox" tabIndex={-1}>
-                      <TableCell component="th" id={labelId} scope="row" padding="none" align="center">
+                      <TableCell component="th" id={labelId} scope="row" padding="none" align="left">
                         {row.id}
                       </TableCell>
-                      <TableCell align="center">{row.title}</TableCell>
-                      <TableCell align="center">{row.user.email}</TableCell>
-                      <TableCell align="center">{formatDate(row.createdAt)}</TableCell>
-                      <TableCell align="center" sx={{ minWidth: '200px' }}>
+                      <TableCell align="left">{row.title}</TableCell>
+                      <TableCell align="left">{row.user.email}</TableCell>
+                      <TableCell align="left">{formatDate(row.createdAt)}</TableCell>
+                      <TableCell align="left" sx={{ maxWidth: '100px' }}>
                         <IconButton onClick={() => handleButtonClick(row.id)}>
                           <EditOutlined />
                         </IconButton>
@@ -161,7 +160,7 @@ export default function JobTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </MainCard>
-      <ViewJob modalOpen={profileOpen} modalClose={profileModalClose} />
+      <ViewJob modalOpen={profileOpen} modalClose={profileModalClose} action="edit" />
     </>
   );
 }

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 // material-ui
 import {
@@ -89,7 +89,7 @@ export default function EventTable() {
 
   const { eventList, total_count, tablePage, items_per_page } = useSelector((state) => state.event);
   // Fetch Data
-  const [user, setUser] = useState({});
+  // const [user, setUser] = useState({});
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [page, setPage] = React.useState(0);
@@ -97,12 +97,12 @@ export default function EventTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(items_per_page);
   let data = stableSort(eventList, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   // const [user, setUser] = useState({});
-  const handleButtonClick = (row) => {
-    profileModalOpen();
-    setUser(row);
+  const handleButtonClick = (id) => {
+    dispatch(getEventById(id));
+    setProfileOpen(true);
   };
   const [profileOpen, setProfileOpen] = useState(false);
-  const profileModalOpen = () => setProfileOpen(true);
+  // const profileModalOpen = () => setProfileOpen(true);
   const profileModalClose = () => setProfileOpen(false);
   const handleAction = (id, action) => {
     Swal.fire({
@@ -167,8 +167,7 @@ export default function EventTable() {
                       <TableCell align="center" sx={{ minWidth: '200px' }}>
                         <IconButton
                           onClick={() => {
-                            profileModalOpen();
-                            setUser(row);
+                            handleButtonClick(row.id);
                           }}
                         >
                           <EditOutlined />
@@ -202,7 +201,7 @@ export default function EventTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </MainCard>
-      <ViewEvent modalOpen={profileOpen} modalClose={profileModalClose} userDetails={user} />
+      <ViewEvent modalOpen={profileOpen} modalClose={profileModalClose} action="edit" />
     </>
   );
 }

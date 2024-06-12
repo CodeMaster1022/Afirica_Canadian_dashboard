@@ -1,9 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-key */
 import { Modal, useMediaQuery } from '@mui/material';
 import PropTypes, { number } from 'prop-types';
 import { useEffect, useState } from 'react';
 // material-ui
+import MultiSelectAll from 'utils/MUISelectAll';
+import Checkbox from '@mui/material/Checkbox';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -44,36 +47,74 @@ const ViewJob = ({ modalOpen, modalClose, action }) => {
   const [name, setName] = useState('');
   const [imageUrl, setSelectedImage] = useState('');
   const [avatar, setAvatar] = useState(userImage);
-  const [title, setTitle] = useState();
+  const [title, setTitle] = useState('');
   const [application, setApplication] = useState('');
-  const [level, setLevel] = useState('beginner');
-  const [start_date, setStartDate] = useState(null);
-  const [end_date, setEndDate] = useState();
+  const [level, setLevel] = useState('expert');
+  const [start_date, setStartDate] = useState(dayjs('2024-06-30'));
+  const [end_date, setEndDate] = useState(dayjs('2024-06-30'));
   const [community, setCommunity] = useState('');
   const [id, setId] = useState(null);
   const [tags, setTags] = useState([]);
   const [description, setDescription] = useState('');
-  const [isRemote, setRemote] = useState(false);
   const [organisation_name, setOrganisation_name] = useState(null);
   const [location, setLocation] = useState('');
   const [user, setUser] = useState('594aad28-d5a2-408b-82d3-35641e2db6b5');
   const [type, setType] = useState('full-time');
-  const [qualifications, setQualifications] = useState([]);
+  const [checked, setChecked] = useState(false);
+  const [initialValue, setInitialTagValue] = useState([{ label: 'Django', value: '1' }]);
+  const departmentNames = [
+    { label: 'Django', value: '1' },
+    { label: 'Next.js', value: '2' },
+    { label: 'React', value: '3' },
+    { label: 'Nuxt', value: '4' }
+  ];
+  const getTextBoxInputValue = (input) => {
+    return input.map((itm) => itm.label);
+  };
+
+  const [currentSelection, setCurrentSelection] = useState(getTextBoxInputValue(initialValue));
+  const handleSelectionChange = (result) => {
+    const valueToSave = result.map((itm) => itm.label);
+    setCurrentSelection(valueToSave);
+  };
+  // Qualification
+  const [qualiValue, setQualiValue] = useState([{ label: 'BSCS', value: '1' }]);
+  const qualificatiionName = [
+    { label: 'BSCS', value: '1' },
+    { label: 'Masters in IT', value: '2' }
+  ];
+  const getQualificationInputValue = (input) => {
+    return input.map((itm) => itm.label);
+  };
+
+  const [qualification, setQualification] = useState(getQualificationInputValue(qualiValue));
+  const handleQualificationSelectionChange = (result) => {
+    const valueToSave = result.map((itm) => itm.label);
+    setQualification(valueToSave);
+  };
   useEffect(() => {
-    // setRemote(jobsDetails?.isRemote || '');
+    if (jobsDetails && jobsDetails.qualifications) {
+      const initialQualificationsValues = qualificatiionName.filter((item) => jobsDetails?.qualifications.includes(item.label));
+      const initialTags = departmentNames.filter((item) => jobsDetails?.tags.includes(item.label));
+      setInitialTagValue(initialTags);
+      setQualiValue(initialQualificationsValues);
+    }
+  }, [jobsDetails]);
+  useEffect(() => {
     setOrganisation_name(jobsDetails?.organisationName || '');
-    setQualifications(jobsDetails?.qualifications || []);
-    setLevel(jobsDetails?.level || []);
-    setType(jobsDetails?.type || []);
-    setId(jobsDetails?.id || null);
+    setLevel(jobsDetails?.level || 'expert');
+    setType(jobsDetails?.type || 'full-time');
+    setId(jobsDetails?.id || '');
     setTitle(jobsDetails?.title || '');
     setApplication(jobsDetails?.externalUrl || '');
-    setCommunity(jobsDetails?.community?.id || null);
-    setTags(jobsDetails?.tags || []);
+    setCommunity(jobsDetails?.community?.id || '');
+    // setTags(jobsDetails?.tags || []);
     setLocation(jobsDetails?.location || '');
     setStartDate(dayjs(jobsDetails?.state_date) || null);
     setEndDate(dayjs(jobsDetails?.end_date) || null);
     setDescription(jobsDetails?.description || '');
+    setChecked(jobsDetails?.isRemote || false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jobsDetails]);
   const Save = () => {
     const endDate = new Date(end_date);
@@ -88,10 +129,10 @@ const ViewJob = ({ modalOpen, modalClose, action }) => {
       type: type,
       external_url: application,
       user: user,
-      qualifications: qualifications,
+      qualifications: qualification,
       location: location,
-      is_remote: true,
-      tags: tags,
+      is_remote: checked,
+      tags: currentSelection,
       community: community,
       start_date: formattedStartDate,
       end_date: formattedEndDate
@@ -111,6 +152,9 @@ const ViewJob = ({ modalOpen, modalClose, action }) => {
   const handleChangeJobType = (event) => {
     event.preventDefault();
     setType(event.target.value);
+  };
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
   };
   const handleChangeLevel = (event) => {
     event.preventDefault();
@@ -192,10 +236,10 @@ const ViewJob = ({ modalOpen, modalClose, action }) => {
                 </Stack>
               </Box>
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Typography sx={{ color: '#8C8C8C' }}>Company Name</Typography>
               <TextField sx={{ width: '100%' }} value={name} required onChange={(e) => setName(e.target.value)} />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12}>
               <Typography sx={{ color: '#8C8C8C' }}>Title</Typography>
               <TextField sx={{ width: '100%' }} value={title} required onChange={(e) => setTitle(e.target.value)} />
@@ -226,7 +270,6 @@ const ViewJob = ({ modalOpen, modalClose, action }) => {
                   onChange={handleChangeLevel}
                   placeholder="level"
                 >
-                  <MenuItem value={'beginner'}>Beginner</MenuItem>
                   <MenuItem value={'intermediate'}>Intermediate </MenuItem>
                   <MenuItem value={'professional'}>Professional </MenuItem>
                   <MenuItem value={'expert'}>Expert</MenuItem>
@@ -236,6 +279,12 @@ const ViewJob = ({ modalOpen, modalClose, action }) => {
             <Grid item xs={12}>
               <Typography sx={{ color: '#8C8C8C' }}>Location</Typography>
               <TextField sx={{ width: '100%' }} value={location} required onChange={(e) => setLocation(e.target.value)} />
+            </Grid>
+            <Grid item xs={1}>
+              <Checkbox checked={checked} onChange={handleChange} inputProps={{ 'aria-label': 'controlled' }} />
+            </Grid>
+            <Grid item xs={11}>
+              <Typography sx={{ color: '#8C8C8C', marginTop: '8px' }}>Remote</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography sx={{ color: '#8C8C8C' }}>Start Date</Typography>
@@ -270,6 +319,26 @@ const ViewJob = ({ modalOpen, modalClose, action }) => {
             <Grid item xs={12}>
               <Typography sx={{ color: '#8C8C8C' }}>Application Link</Typography>
               <TextField sx={{ width: '100%' }} value={application} required onChange={(e) => setApplication(e.target.value)} />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography sx={{ color: '#8C8C8C' }}>Tags</Typography>
+              <MultiSelectAll
+                sx={{ maxheight: '700px' }}
+                items={departmentNames}
+                selectAllLabel="Select All"
+                value={initialValue}
+                onChange={handleSelectionChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography sx={{ color: '#8C8C8C' }}>Qualificatiion</Typography>
+              <MultiSelectAll
+                sx={{ maxheight: '200px' }}
+                items={qualificatiionName}
+                selectAllLabel="Select All"
+                value={qualiValue}
+                onChange={handleQualificationSelectionChange}
+              />
             </Grid>
             <Grid item xs={12}>
               <Typography sx={{ color: '#8C8C8C' }}>Job Description</Typography>

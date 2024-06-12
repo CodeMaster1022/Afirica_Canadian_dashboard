@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   eventList: [],
+  status: 'idle',
   eventDetails: {},
   total_count: 0,
   has_more: false,
@@ -32,9 +33,11 @@ const eventSlice = createSlice({
       state.error = action.payload;
     },
     getSuccess: (state) => {
+      state.status = 'added';
       state.loading = false;
     },
     getEventSuccess: (state, action) => {
+      state.status = 'idle';
       state.eventList = action.payload;
       state.loading = false;
       state.error = false;

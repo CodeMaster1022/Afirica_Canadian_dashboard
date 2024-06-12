@@ -9,31 +9,41 @@ const Toast = Swal.mixin({
   timerProgressBar: true
 });
 
-export const jobsCreate = (input) => async (dispatch) => {
-  dispatch(getRequest());
-  const axiosInstance = useAxios();
-  try {
-    const result = await axiosInstance.post('/admin/jobs/create/', input.data);
-    console.log(result, 'result');
-    if (result.data) {
-      dispatch(getSuccess());
+export const jobsCreate =
+  ({ input }) =>
+  async (dispatch) => {
+    dispatch(getRequest());
+    const axiosInstance = useAxios();
+    try {
+      const result = await axiosInstance.post('/admin/jobs/create/', input);
+      if (result.data.message) {
+        dispatch(getError(result.data.message));
+        Toast.fire({
+          icon: 'warning',
+          position: 'center',
+          text: `${result.data.message}`,
+          title: 'Success!'
+        });
+      } else {
+        dispatch(getSuccess());
+        Toast.fire({
+          icon: 'success',
+          position: 'center',
+          text: `Created`,
+          title: 'Success!'
+        });
+      }
+    } catch (error) {
+      dispatch(getError(error.data));
+      console.log(error);
       Toast.fire({
-        icon: 'success',
+        icon: 'error',
         position: 'center',
-        text: `Success`,
-        title: 'Success!'
+        text: `${error.message}`,
+        title: 'Error!'
       });
     }
-  } catch (error) {
-    console.log(error);
-    Toast.fire({
-      icon: 'error',
-      position: 'center',
-      text: `${error.message}`,
-      title: 'Error!'
-    });
-  }
-};
+  };
 export const getAlljobs = (newPage, rowsPerPage) => async (dispatch) => {
   const axiosInstance = useAxios();
   dispatch(getRequest());
@@ -57,7 +67,6 @@ export const getjobsById = (id) => async (dispatch) => {
   // dispatch(getRequest());
   try {
     const result = await axiosInstance.get(`/admin/jobs/${id}/`);
-    console.log(result.data);
     if (result.data) {
       dispatch(getjobsDetailSuccess(result.data));
     }

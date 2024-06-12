@@ -13,6 +13,23 @@ const token = 'yZqUfJKUn5PBupRdEdvyuqcf6CLP7yTCrDxdmDy7';
 const config = {
   headers: { Authorization: `Bearer ${token}` }
 };
+// const tokenImage = localStorage.getItem('token');
+const configImage = {
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+};
+export const imageUpload = (image, url) => async () => {
+  console.log(url, '=============>', image);
+  try {
+    const formData = new FormData();
+    formData.append('data', image);
+    const result = await axios.post(`https://usc1.contabostorage.com/48cbfedc21284e90932e08791963844b:acca/${url}`, formData, configImage);
+    console.log(result);
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const getCommunity = () => async (dispatch) => {
   try {
     const result = await axios.get('https://api.accalberta.ca/api/v1/admin/communities/', config);

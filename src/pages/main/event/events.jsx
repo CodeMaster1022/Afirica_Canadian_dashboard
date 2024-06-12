@@ -3,14 +3,14 @@ import Button from '@mui/material/Button';
 import { Box } from '@mui/material';
 import EventTable from './eventTable';
 import MainCard from 'components/MainCard';
-import AddNewEvent from './modal/addNewEvent';
+import ViewEvent from './modal/viewEvent';
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllEvent } from 'redux/eventRelated/eventHandle';
 // Request Loader
 import RequestLoader from 'components/waiting/RequestLoader';
 export default function Events() {
-  const { loading } = useSelector((state) => state.event);
+  const { loading, status } = useSelector((state) => state.event);
   const [newUserOpen, setNewUserOpen] = useState(false);
   const newUserModalOpen = () => setNewUserOpen(true);
   const newUserModalClose = () => setNewUserOpen(false);
@@ -19,6 +19,9 @@ export default function Events() {
   useEffect(() => {
     dispatch(getAllEvent());
   }, [dispatch]);
+  useEffect(() => {
+    if (status === 'added') dispatch(getAllEvent());
+  }, [status, dispatch]);
   return (
     <>
       <Box sx={{ padding: 2 }}>
@@ -27,7 +30,7 @@ export default function Events() {
         </Button>
       </Box>
       <MainCard>{loading ? <RequestLoader /> : <EventTable />}</MainCard>
-      <AddNewEvent modalOpen={newUserOpen} modalClose={newUserModalClose} />
+      <ViewEvent modalOpen={newUserOpen} modalClose={newUserModalClose} />
     </>
   );
 }
