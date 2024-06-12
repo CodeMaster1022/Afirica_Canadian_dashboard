@@ -30,7 +30,7 @@ export default function Events() {
         </Button>
       </Box>
       <MainCard>{loading ? <RequestLoader /> : <EventTable />}</MainCard>
-      <ViewEvent modalOpen={newUserOpen} modalClose={newUserModalClose} />
+      <ViewEvent modalOpen={newUserOpen} modalClose={newUserModalClose} action="create" />
     </>
   );
 }

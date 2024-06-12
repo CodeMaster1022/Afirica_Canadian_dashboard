@@ -23,7 +23,7 @@ import { MuiColorInput } from 'mui-color-input';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getCommunity } from 'redux/communityRelated/communityHandle';
-import { eventCreate, eventUpdate, getAllEvent } from 'redux/eventRelated/eventHandle';
+import { eventCreate, eventUpdate } from 'redux/eventRelated/eventHandle';
 // project import
 // import ProfileTab from './ProfileTab';
 import Avatar from 'components/@extended/Avatar';
@@ -59,6 +59,7 @@ const ViewEvent = ({ modalOpen, modalClose, action }) => {
   const [location, setLocation] = useState('Lahore');
   const [user, setUser] = useState('594aad28-d5a2-408b-82d3-35641e2db6b5');
   const [eventExpiryDate, setEventExpiryDate] = useState(dayjs('2023-01-01'));
+  const [id, setId] = useState(null);
   const Save = () => {
     const eventDate = new Date(eventHappeningDate);
     const formattedEventDate = format(eventDate, 'yyyy-MM-dd');
@@ -76,8 +77,13 @@ const ViewEvent = ({ modalOpen, modalClose, action }) => {
       user: user
     };
     if (title !== '' && description !== '' && community !== '') {
-      dispatch(eventCreate(data));
-      dispatch(getAllEvent(items_per_page, tablePage));
+      if (action === 'edit') {
+        dispatch(eventUpdate(userKeycloakId, data));
+      }
+      if (action === 'create') {
+        dispatch(eventCreate(data));
+      }
+
       modalClose(true);
     }
   };
@@ -89,6 +95,7 @@ const ViewEvent = ({ modalOpen, modalClose, action }) => {
       setCommunity(eventDetails?.community?.id || '');
       setDescription(eventDetails?.description || '');
       setColor(eventDetails?.color || '');
+      setUserKeycloakId(eventDetails?.id || '');
     }
   }, [eventDetails, action]);
   const Cancel = () => {
@@ -241,7 +248,7 @@ const ViewEvent = ({ modalOpen, modalClose, action }) => {
                     Cancel
                   </Button>
                   <Button variant="contained" onClick={Save}>
-                    Update
+                    Save
                   </Button>
                 </Stack>
               </Grid>

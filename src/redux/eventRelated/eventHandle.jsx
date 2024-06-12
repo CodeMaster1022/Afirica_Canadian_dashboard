@@ -98,41 +98,29 @@ export const getEventByCommunityId = (id) => async (dispatch) => {
     dispatch(getError(error.data));
   }
 };
-export const eventUpdate =
-  ({ userKeycloakId, title, description, eventExpiryDate, eventHappeningDate, imageUrl, eventUrl, color, location, user, community }) =>
-  async (dispatch) => {
-    const axiosInstance = useAxios();
-    try {
-      const result = await axiosInstance.patch(`/admin/events/${userKeycloakId}/`, {
-        title,
-        description,
-        eventExpiryDate,
-        eventHappeningDate,
-        imageUrl,
-        eventUrl,
-        color,
-        location,
-        user,
-        community
-      });
-      if (result) {
-        dispatch(getSuccess());
-        Toast.fire({
-          icon: 'success',
-          position: 'center',
-          text: `${result.data.message}`,
-          title: 'Success!'
-        });
-      }
-    } catch (error) {
+export const eventUpdate = (userKeycloakId, data) => async (dispatch) => {
+  console.log(data);
+  const axiosInstance = useAxios();
+  try {
+    const result = await axiosInstance.patch(`/admin/events/${userKeycloakId}/`, data);
+    if (result.data) {
+      dispatch(getSuccess());
       Toast.fire({
-        icon: 'error',
+        icon: 'success',
         position: 'center',
-        text: `${error.message}`,
-        title: 'Error!'
+        text: `Updated`,
+        title: 'Success!'
       });
     }
-  };
+  } catch (error) {
+    Toast.fire({
+      icon: 'error',
+      position: 'center',
+      text: `${error.message}`,
+      title: 'Error!'
+    });
+  }
+};
 export const eventDelete = (id) => async (dispatch) => {
   const axiosInstance = useAxios();
   try {
