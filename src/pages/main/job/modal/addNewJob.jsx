@@ -133,16 +133,7 @@ const AddNewJob = ({ modalOpen, modalClose, action }) => {
 
   const Save = () => {
     console.log(user);
-    if (
-      imageUrl !== '' &&
-      input.description !== '' &&
-      input.type !== '' &&
-      input.organisation_name !== '' &&
-      input.tags !== '' &&
-      input.level !== '' &&
-      input.community !== '' &&
-      input.external_url !== ''
-    ) {
+    if (input.type !== '' && input.organisation_name !== '' && input.tags !== '' && input.level !== '' && input.community !== '') {
       console.log(imageUrl, 'iamgeurl');
       // dispatch(imageUpload(imageUrl, '32lk4j2lk34234l24.jpg'));
       if (action === 'create') dispatch(jobsCreate({ input }));
