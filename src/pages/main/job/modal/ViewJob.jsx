@@ -21,6 +21,9 @@ import Select from '@mui/material/Select';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+// Context
+import KeycloakContext from 'contexts/KeycContext';
+import { useContext } from 'react';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getCommunity } from 'redux/communityRelated/communityHandle';
@@ -44,7 +47,8 @@ const ViewJob = ({ modalOpen, modalClose, action }) => {
     dispatch(getCommunity());
   }, [dispatch]);
   const theme = useTheme();
-  const [name, setName] = useState('');
+  const [user, setUser] = useState('');
+  // const [name, setName] = useState('');
   const [imageUrl, setSelectedImage] = useState('');
   const [avatar, setAvatar] = useState(userImage);
   const [title, setTitle] = useState('');
@@ -54,11 +58,10 @@ const ViewJob = ({ modalOpen, modalClose, action }) => {
   const [end_date, setEndDate] = useState(dayjs('2024-06-30'));
   const [community, setCommunity] = useState('');
   const [id, setId] = useState(null);
-  const [tags, setTags] = useState([]);
+  // const [tags, setTags] = useState([]);
   const [description, setDescription] = useState('');
   const [organisation_name, setOrganisation_name] = useState(null);
   const [location, setLocation] = useState('');
-  const [user, setUser] = useState('594aad28-d5a2-408b-82d3-35641e2db6b5');
   const [type, setType] = useState('full-time');
   const [checked, setChecked] = useState(false);
   const [initialValue, setInitialTagValue] = useState([{ label: 'Django', value: '1' }]);
@@ -108,6 +111,7 @@ const ViewJob = ({ modalOpen, modalClose, action }) => {
     setTitle(jobsDetails?.title || '');
     setApplication(jobsDetails?.externalUrl || '');
     setCommunity(jobsDetails?.community?.id || '');
+    setUser(jobsDetails?.user?.id || '');
     // setTags(jobsDetails?.tags || []);
     setLocation(jobsDetails?.location || '');
     setStartDate(dayjs(jobsDetails?.state_date) || null);

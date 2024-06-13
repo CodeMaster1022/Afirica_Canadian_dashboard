@@ -9,12 +9,8 @@ import Toolbar from '@mui/material/Toolbar';
 // project import
 import Drawer from './Drawer';
 import Header from './Header';
-import Footer from './Footer';
 import HorizontalBar from './Drawer/HorizontalBar';
 import Loader from 'components/Loader';
-// import Breadcrumbs from 'components/@extended/Breadcrumbs';
-// import AuthGuard from 'utils/route-guard/AuthGuard';
-// import Breadcrumbs from 'components/@extended/Breadcrumbs';
 import { MenuOrientation } from 'config';
 import useConfig from 'hooks/useConfig';
 import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
@@ -58,12 +54,9 @@ export default function DashboardLayout() {
             flexDirection: 'column'
           }}
         >
-          {/* <Breadcrumbs /> */}
           <Outlet />
-          <Footer />
         </Container>
       </Box>
     </Box>
-    // </AuthGuard>
   );
 }

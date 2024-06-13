@@ -27,7 +27,7 @@ import LinearProgress from './LinearProgress';
 import Link from './Link';
 import ListItemButton from './ListItemButton';
 import ListItemIcon from './ListItemIcon';
-import LoadingButton from './LoadingButton';
+// import LoadingButton from './LoadingButton';
 import OutlinedInput from './OutlinedInput';
 import Pagination from './Pagination';
 import PaginationItem from './PaginationItem';
@@ -77,7 +77,7 @@ export default function ComponentsOverrides(theme) {
     Link(),
     ListItemButton(theme),
     ListItemIcon(theme),
-    LoadingButton(),
+    // LoadingButton(),
     OutlinedInput(theme),
     Pagination(),
     PaginationItem(theme),

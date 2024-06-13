@@ -4,8 +4,8 @@ import { Box, Tabs, Tab } from '@mui/material';
 import MainCard from 'components/MainCard';
 import PropTypes from 'prop-types';
 import CanadaMap from '../map/canadaMap';
-import MarkersPopups from 'sections/maps/MarkersPopups';
-import { countries } from 'data/location';
+// import MarkersPopups from 'sections/maps/MarkersPopups';
+// import { countries } from 'data/location';
 import { setTabNumber } from 'redux/mapRelated/mapSlice';
 
 // Province map
@@ -46,10 +46,10 @@ export default function Community() {
     fetchData();
   }, [search, countyName]);
 
-  const mapConfiguration = {
-    mapboxAccessToken: import.meta.env.VITE_APP_MAPBOX_ACCESS_TOKEN,
-    minZoom: 1
-  };
+  // const mapConfiguration = {
+  //   mapboxAccessToken: import.meta.env.VITE_APP_MAPBOX_ACCESS_TOKEN,
+  //   minZoom: 1
+  // };
   const Tab_Titles = ['Province', 'Boundary', 'Map'];
   const handleChange = (event, newValue) => {
     dispatch(setTabNumber(newValue));

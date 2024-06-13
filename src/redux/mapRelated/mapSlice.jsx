@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { countries } from 'data/location';
+// import { countries } from 'data/location';
 const initialState = {
   search: '',
   countyName: '',
   countySearch: '',
-  data: countries,
+  data: [],
   countAlbertaMember: [],
   tabnumber: 0
   // maxCount: data.length
@@ -15,7 +15,8 @@ const mapFilterSlice = createSlice({
   initialState,
   reducers: {
     getAlbertaMember: (state) => {
-      state.countAlbertaMember = countries.filter((city) => city.province === 'Alberta');
+      // state.countAlbertaMember = countries.filter((city) => city.province === 'Alberta');
+      state.countAlbertaMember = [];
     },
     getFilter: (state, action) => {
       state.search = action.payload;

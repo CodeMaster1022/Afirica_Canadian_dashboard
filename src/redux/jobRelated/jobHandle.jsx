@@ -14,6 +14,7 @@ export const jobsCreate =
   async (dispatch) => {
     dispatch(getRequest());
     const axiosInstance = useAxios();
+    console.log(input);
     try {
       const result = await axiosInstance.post('/admin/jobs/create/', input);
       if (result.data.message) {

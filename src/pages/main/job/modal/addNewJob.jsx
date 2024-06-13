@@ -23,7 +23,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { format } from 'date-fns';
 import dayjs from 'dayjs';
-
+// Context
+import KeycloakContext from 'contexts/KeycContext';
+import { useContext } from 'react';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getCommunity } from 'redux/communityRelated/communityHandle';
@@ -49,6 +51,8 @@ const AddNewJob = ({ modalOpen, modalClose, action }) => {
     setChecked(event.target.checked);
   };
   // const [name, setName] = useState('');
+  const keycloak = useContext(KeycloakContext);
+  const user = keycloak.subject;
   const [imageUrl, setSelectedImage] = useState('');
   const [avatar, setAvatar] = useState(userImage);
   const [start_date, setStartDate] = useState(dayjs('2024-06-30'));
@@ -60,7 +64,7 @@ const AddNewJob = ({ modalOpen, modalClose, action }) => {
     level: 'expert',
     external_url: 'http://localhost:3000/events',
     location: '',
-    user: '594aad28-d5a2-408b-82d3-35641e2db6b5',
+    user: user,
     type: 'full-time',
     is_remote: checked,
     community: ''
@@ -128,6 +132,7 @@ const AddNewJob = ({ modalOpen, modalClose, action }) => {
   };
 
   const Save = () => {
+    console.log(user);
     if (
       imageUrl !== '' &&
       input.description !== '' &&

@@ -20,6 +20,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { format } from 'date-fns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { MuiColorInput } from 'mui-color-input';
+// Context
+import KeycloakContext from 'contexts/KeycContext';
+import { useContext } from 'react';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getCommunity } from 'redux/communityRelated/communityHandle';
@@ -43,7 +46,9 @@ const ViewEvent = ({ modalOpen, modalClose, action }) => {
     dispatch(getCommunity());
   }, [dispatch]);
   const theme = useTheme();
-  const [userKeycloakId, setUserKeycloakId] = useState('');
+  const keycloak = useContext(KeycloakContext);
+  const currentUser = keycloak.subject;
+  const [userKeycloakId, setUserKeycloakId] = useState(currentUser);
   const [imageUrl, setSelectedImage] = useState('');
   const [avatar, setAvatar] = useState(userImage);
   const [title, setTitle] = useState('');
@@ -57,7 +62,6 @@ const ViewEvent = ({ modalOpen, modalClose, action }) => {
   const [description, setDescription] = useState('');
   const [color, setColor] = useState('#000');
   const [location, setLocation] = useState('Lahore');
-  const [user, setUser] = useState('594aad28-d5a2-408b-82d3-35641e2db6b5');
   const [eventExpiryDate, setEventExpiryDate] = useState(dayjs('2023-01-01'));
   const [id, setId] = useState(null);
   const Save = () => {
@@ -73,15 +77,25 @@ const ViewEvent = ({ modalOpen, modalClose, action }) => {
       community: community,
       eventExpiryDate: formattedExpDate,
       color: color,
+      location: location
+    };
+    const createData = {
+      title: title,
+      description: description,
+      eventHappeningDate: formattedEventDate,
+      eventUrl: eventUrl,
+      community: community,
+      eventExpiryDate: formattedExpDate,
+      color: color,
       location: location,
-      user: user
+      user: userKeycloakId
     };
     if (title !== '' && description !== '' && community !== '') {
       if (action === 'edit') {
         dispatch(eventUpdate(userKeycloakId, data));
       }
       if (action === 'create') {
-        dispatch(eventCreate(data));
+        dispatch(eventCreate(createData));
       }
 
       modalClose(true);

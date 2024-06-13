@@ -40,7 +40,7 @@ const App = () => {
     console.log(initialize, 'initialize');
     if (keycloak && initialize) {
       localStorage.setItem('token', keycloak?.token);
-      localStorage.setItem('keycloakRefreshToken', keycloak.refreshToken);
+      // localStorage.setItem('user', keycloak?.subject);
       keycloak.onTokenExpired = () => keycloak.updateToken(600);
     }
     return () => {

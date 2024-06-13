@@ -25,7 +25,3 @@ export default function RecentSuveyCard() {
     </MainCard>
   );
 }
-
-// RecentNotifyCard.propTypes = {
-//   date: PropTypes.string
-// };
