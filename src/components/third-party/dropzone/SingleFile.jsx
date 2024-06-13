@@ -1,11 +1,14 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable jsx-a11y/media-has-caption */
 import PropTypes from 'prop-types';
 // material-ui
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CardMedia from '@mui/material/CardMedia';
 import Stack from '@mui/material/Stack';
-
+import React from 'react';
 // third-party
 import { useDropzone } from 'react-dropzone';
 
@@ -27,10 +30,10 @@ const DropzoneWrapper = styled('div')(({ theme }) => ({
 
 // ==============================|| UPLOAD - SINGLE FILE ||============================== //
 
-export default function SingleFileUpload({ error, file, setFieldValue, sx }) {
+export function SingleFileUpload({ error, file, setFieldValue, sx }) {
   const { getRootProps, getInputProps, isDragActive, isDragReject, fileRejections } = useDropzone({
     accept: {
-      'image/*': []
+      'application/pdf': []
     },
     multiple: false,
     onDrop: (acceptedFiles) => {
@@ -88,7 +91,7 @@ export default function SingleFileUpload({ error, file, setFieldValue, sx }) {
         }}
       >
         <input {...getInputProps()} />
-        <PlaceholderContent />
+        <PlaceholderContent content="document" />
         {thumbs}
       </DropzoneWrapper>
 
@@ -101,6 +104,30 @@ export default function SingleFileUpload({ error, file, setFieldValue, sx }) {
           </Button>
         </Stack>
       )}
+    </Box>
+  );
+}
+export default function VideoInput(width, height) {
+  const inputRef = React.useRef();
+
+  const [source, setSource] = React.useState();
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    const url = URL.createObjectURL(file);
+    setSource(url);
+  };
+
+  // const handleChoose = (event) => {
+  //   inputRef.current.click();
+  // };
+
+  return (
+    <Box sx={{ marginTop: '20px', padding: '5px' }}>
+      <TextField ref={inputRef} type="file" onChange={handleFileChange} accept=".mov,.mp4" />
+      {/* {!source && <Button onClick={handleChoose}>Choose</Button>} */}
+      {source && <video className="VideoInput_video" width="100%" height={height} controls src={source} />}
+      <div className="VideoInput_footer">{source || 'Select the Video'}</div>
     </Box>
   );
 }

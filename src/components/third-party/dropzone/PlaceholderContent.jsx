@@ -13,7 +13,7 @@ import CameraOutlined from '@ant-design/icons/CameraOutlined';
 
 // ==============================|| UPLOAD - PLACEHOLDER ||============================== //
 
-export default function PlaceholderContent({ type }) {
+export default function PlaceholderContent({ type, content }) {
   return (
     <>
       {type !== DropzopType.STANDARD && (
@@ -26,7 +26,7 @@ export default function PlaceholderContent({ type }) {
         >
           <CardMedia component="img" image={UploadCover} sx={{ width: 150 }} />
           <Stack sx={{ p: 3 }} spacing={1}>
-            <Typography variant="h5">Drag & Drop or Select file</Typography>
+            <Typography variant="h5">Drag & Drop or Select {content} file</Typography>
 
             <Typography color="secondary">
               Drop files here or click&nbsp;
@@ -47,4 +47,4 @@ export default function PlaceholderContent({ type }) {
   );
 }
 
-PlaceholderContent.propTypes = { type: PropTypes.any };
+PlaceholderContent.propTypes = { type: PropTypes.any, content: PropTypes.string };

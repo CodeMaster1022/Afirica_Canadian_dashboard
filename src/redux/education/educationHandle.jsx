@@ -41,9 +41,11 @@ export const educationDelete = (id) => async (dispatch) => {
         text: `${response.data}`,
         title: 'Success!'
       });
+    } else {
+      dispatch(getSuccess());
     }
   } catch (error) {
-    console.log(error);
+    dispatch(getError(error.data));
     Toast.fire({
       icon: 'error',
       position: 'center',

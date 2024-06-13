@@ -5,8 +5,6 @@ import PropTypes, { number } from 'prop-types';
 import { useEffect, useState } from 'react';
 // import Swal from 'sweetalert2';
 // material-ui
-import MUIRichTextEditor from 'mui-rte';
-import { convertToRaw } from 'draft-js';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -22,7 +20,11 @@ import MainCard from 'components/MainCard';
 import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import UploadSingleFile from 'components/third-party/dropzone/SingleFile';
+import { SingleFileUpload } from 'components/third-party/dropzone/SingleFile';
+import VideoInput from 'components/third-party/dropzone/SingleFile';
+// Context
+import KeycloakContext from 'contexts/KeycContext';
+import { useContext } from 'react';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { getCommunity } from 'redux/communityRelated/communityHandle';
@@ -33,7 +35,6 @@ import Avatar from 'components/@extended/Avatar';
 import Button from '@mui/material/Button';
 import { ThemeMode } from 'config';
 // assets
-
 import CameraOutlined from '@ant-design/icons/CameraOutlined';
 import userImage from 'assets/images/users/avatar-1.png';
 
@@ -46,16 +47,18 @@ const AddNewEducation = ({ modalOpen, modalClose, action }) => {
     dispatch(getCommunity());
   }, [dispatch]);
   const theme = useTheme();
+  const keycloak = useContext(KeycloakContext);
+  const currentUser = keycloak.subject;
   const [imageUrl, setSelectedImage] = useState('');
   const [avatar, setAvatar] = useState(userImage);
   const [title, setTitle] = useState('');
-  const [community, setCommunity] = useState([]);
-  const [video, setVideo] = useState('http://localhost:3000/events');
-  const [group, setGroup] = useState([]);
+  const [community, setCommunity] = useState('');
+  const [video, setVideo] = useState('');
+  const [group, setGroup] = useState('');
   const [body, setBody] = useState('');
-  const [document, setDocument] = useState('https://localhost.com');
+  const [document, setDocument] = useState('');
   const [link, setlink] = useState('https://localhost.com');
-  const [user, setUser] = useState('594aad28-d5a2-408b-82d3-35641e2db6b5');
+  const [user, setUser] = useState(currentUser);
   const [type, setType] = useState(1);
   useEffect(() => {
     if (action === 'edit') {
@@ -74,13 +77,15 @@ const AddNewEducation = ({ modalOpen, modalClose, action }) => {
       image: 'https://localhost.com',
       community: community,
       document,
-      link,
+      link: link,
       group: group,
-      user
+      user: user
     };
-    modalClose(true);
-    if (action === 'create') dispatch(educationCreate(data));
-    if (action === 'edit') dispatch(educationUpdate(educationDetailes.id, data));
+    if (title !== '') {
+      modalClose(true);
+      if (action === 'create') dispatch(educationCreate(data));
+      if (action === 'edit') dispatch(educationUpdate(educationDetailes.id, data));
+    }
   };
   const Cancel = () => {
     modalClose(true);
@@ -232,6 +237,40 @@ const AddNewEducation = ({ modalOpen, modalClose, action }) => {
               <Typography sx={{ color: '#8C8C8C' }}>External Link</Typography>
               <TextField sx={{ width: '100%' }} value={link} required onChange={(e) => setlink(e.target.value)} />
             </Grid>
+            {/* <Grid item xs={12}>
+              <MainCard sx={{ mt: '20px' }}>
+                <Formik
+                  initialValues={{ files: null }}
+                  onSubmit={(values) => {
+                    // submit form
+                    console.log('dropzone upload - ', values);
+                  }}
+                  validationSchema={yup.object().shape({
+                    files: yup.mixed().required('Avatar is a required.')
+                  })}
+                >
+                  {({ values, handleSubmit, setFieldValue, touched, errors }) => (
+                    <form onSubmit={handleSubmit}>
+                      <Grid container spacing={3}>
+                        <Grid item xs={12}>
+                          <Stack spacing={1.5} alignItems="center">
+                            <VideoFileUpload setFieldValue={setFieldValue} file={values.files} error={touched.files && !!errors.files} />
+                            {touched.files && errors.files && (
+                              <FormHelperText error id="standard-weight-helper-text-password-login">
+                                {errors.files}
+                              </FormHelperText>
+                            )}
+                          </Stack>
+                        </Grid>
+                      </Grid>
+                    </form>
+                  )}
+                </Formik>
+              </MainCard>
+            </Grid> */}
+            <Grid xs={12}>
+              <VideoInput width={400} height={300} />
+            </Grid>
             <Grid item xs={12}>
               <MainCard sx={{ mt: '20px' }}>
                 <Formik
@@ -249,7 +288,7 @@ const AddNewEducation = ({ modalOpen, modalClose, action }) => {
                       <Grid container spacing={3}>
                         <Grid item xs={12}>
                           <Stack spacing={1.5} alignItems="center">
-                            <UploadSingleFile setFieldValue={setFieldValue} file={values.files} error={touched.files && !!errors.files} />
+                            <SingleFileUpload setFieldValue={setFieldValue} file={values.files} error={touched.files && !!errors.files} />
                             {touched.files && errors.files && (
                               <FormHelperText error id="standard-weight-helper-text-password-login">
                                 {errors.files}
@@ -264,7 +303,7 @@ const AddNewEducation = ({ modalOpen, modalClose, action }) => {
               </MainCard>
             </Grid>
             <Grid item xs={12}>
-              <Typography sx={{ color: '#8C8C8C' }}>Job Description</Typography>
+              <Typography sx={{ color: '#8C8C8C' }}>Education Description</Typography>
               <Divider />
               <Box>
                 <TextField value={body} onChange={(e) => setBody(e.target.value)} fullWidth multiline rows={4} />

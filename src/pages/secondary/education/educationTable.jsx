@@ -74,7 +74,6 @@ export default function EventTable() {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
         dispatch(educationDelete(id));
-        dispatch(getEducation(items_per_page, tablePage));
       } else if (result.isDenied) {
         Swal.fire(`${action} was cancelled`, '', 'info');
       }
